@@ -18,6 +18,8 @@ public:
     explicit ServerWindow(QWidget *parent = 0); // constructor
     ~ServerWindow(); // destructor
 
+    void clientDisconnect(int client);
+
 private slots:
     /********************************************************
      *  Function:   on_srvStartStopButton_clicked()

@@ -27,13 +27,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     serverwindow.cpp \
     clientwindow.cpp \
-    configdialog.cpp
+    configdialog.cpp \
+    server.cpp
 
 HEADERS  += mainwindow.h \
     serverwindow.h \
     clientwindow.h \
     configdialog.h \
-    sockets.h
+    sockets.h \
+    server.h
 
 FORMS    += mainwindow.ui \
     serverwindow.ui \

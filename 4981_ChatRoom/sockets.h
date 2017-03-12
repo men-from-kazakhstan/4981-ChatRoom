@@ -12,4 +12,3 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-int clt_socket;
