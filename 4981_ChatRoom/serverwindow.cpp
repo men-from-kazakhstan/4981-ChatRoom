@@ -8,6 +8,8 @@
 
 #include "serverwindow.h"
 #include "ui_serverwindow.h"
+#include "server.h"
+#include "client.h"
 
 /* constructor */
 ServerWindow::ServerWindow(QWidget *parent) :
@@ -26,5 +28,15 @@ ServerWindow::~ServerWindow()
 /* server start button event handler*/
 void ServerWindow::on_srvStartStopButton_clicked()
 {
-
+    // check for valid port
+    if(validPort(ui->srvPortEdit->text(), this))
+    {
+        // if valid copy the port to a char array
+        sprintf(srvPort, ui->srvPortEdit->text().toStdString().c_str());
+        setupServerSocket(this, &srv_socket, serverAddr, newCltAddr, srvPort);
+    }
+    else
+    {
+        ui->srvPortEdit->clear(); // clear the username edit text
+    }
 }

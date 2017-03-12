@@ -13,16 +13,40 @@
 #include "clientwindow.h"
 #include "ui_clientwindow.h"
 #include "configdialog.h"
+#include "client.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <QMessageBox>
 
 /* constructor */
 ClientWindow::ClientWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ClientWindow)
 {
+    char usernameDisplay[64] = "Username: ";
+    char portDisplay[64] = "Port: ";
+    char ipDisplay[64] = "Server: ";
+
     ui->setupUi(this);
 
     ConfigDialog *cd = new ConfigDialog();
     cd->exec();
+
+    strcat(usernameDisplay, cltUsername);
+    strcat(portDisplay, cltPort);
+    strcat(ipDisplay, cltIP);
+    ui->cltConfigDisplay->append(usernameDisplay);
+    ui->cltConfigDisplay->append(portDisplay);
+    ui->cltConfigDisplay->append(ipDisplay);
+
+    setupClientSocket(this, &clt_socket, clientAddr, cltPort, cltIP);
 }
 
 /* destructor */
