@@ -13,6 +13,7 @@
 #include "clientwindow.h"
 #include "ui_clientwindow.h"
 #include "configdialog.h"
+#include "client.h"
 
 /* constructor */
 ClientWindow::ClientWindow(QWidget *parent) :
@@ -35,4 +36,8 @@ ClientWindow::~ClientWindow()
 void ClientWindow::on_cltSendButton_clicked()
 {
 
+}
+
+void ClientWindow::getUIMessage(char *pmsg) {
+    sprintf(pmsg, ui->cltChatEdit->toPlainText().toStdString().c_str());
 }
