@@ -4,6 +4,9 @@
 #define CONFIGDIALOG_H
 
 #include <QDialog>
+#include <sockets.h>
+
+#define DEFAULTPORT 8000
 
 namespace Ui {
 class ConfigDialog;

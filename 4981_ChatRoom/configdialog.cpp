@@ -28,4 +28,13 @@ ConfigDialog::~ConfigDialog()
 void ConfigDialog::on_cnfgOkButton_clicked()
 {
     this->close(); // close the current window
+
+    if((clt_socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        QMessageBox::information(this, "Error", "Error: Failure to create TCP socket");
+    }
+    else
+    {
+        QMessageBox::information(this, "Info", "TCP socket created");
+    }
 }

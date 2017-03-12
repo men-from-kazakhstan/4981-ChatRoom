@@ -58,6 +58,9 @@
      <height>24</height>
     </rect>
    </property>
+   <property name="text">
+    <string/>
+   </property>
   </widget>
   <widget class="QLabel" name="cnfgServerIPLabel">
    <property name="geometry">
