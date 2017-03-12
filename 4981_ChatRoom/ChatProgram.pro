@@ -32,8 +32,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     serverwindow.h \
     clientwindow.h \
-    configdialog.h \
-    sockets.h
+    configdialog.h
 
 FORMS    += mainwindow.ui \
     serverwindow.ui \
