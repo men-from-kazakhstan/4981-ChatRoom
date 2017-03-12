@@ -34,7 +34,6 @@ HEADERS  += mainwindow.h \
     serverwindow.h \
     clientwindow.h \
     configdialog.h \
-    sockets.h \
     server.h
 
 FORMS    += mainwindow.ui \
