@@ -35,8 +35,8 @@ ClientWindow::~ClientWindow()
 /* clients message send button event handler */
 void ClientWindow::on_cltSendButton_clicked()
 {
-    char *x;
-    x = formatMessage("Hello","127.0.0.1","Matt Goerwell");
+    char x[BUFLEN];
+    formatMessage("Hello","127.0.0.1","Matt Goerwell",x);
     puts(x);
 }
 

@@ -29,6 +29,7 @@ void getUserMessage(ClientWindow *cw, char *completeMsg, char *IP, char *usernam
  *                      char *message: buffer that holds message to be formatted.
  *                      char *IP: string containing the IP of the client sending the message
  *                      char *username: client username
+ *                      char *dest: where the formatted message should be written.
  *
  *  Programmer:     Matt Goerwell
  *
@@ -37,9 +38,9 @@ void getUserMessage(ClientWindow *cw, char *completeMsg, char *IP, char *usernam
  *  Modified:
  *
  *  Desc:
- *      This will take the message passed into and apply standard formatting rules.
+ *      This will take the message passed into it and apply standard formatting rules.
  *      That is to say, It will prepend the message with the timestamp, username, and
  *      IP address of the sender. It will also colour code the username eventually.
  *******************************************************/
-char* formatMessage(const char *message, const char *IP, const char *username);
+void formatMessage(const char *message, const char *IP, const char *username, char* dest);
 #endif // CLIENT_H
