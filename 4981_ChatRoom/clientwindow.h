@@ -18,6 +18,21 @@ public:
     explicit ClientWindow(QWidget *parent = 0); // constructor
     ~ClientWindow(); // destructor
 
+    /********************************************************
+     *  Function:       getUIMessage(char *pmsg)
+     *                      char *pmsg: string to hold the message from GUI
+     *
+     *  Programmer:     Robert Arendac
+     *
+     *  Created:        Mar 11 2017
+     *
+     *  Modified:
+     *
+     *  Desc:
+     *      Gets the message from the UI and inserts it into pmsg
+     *******************************************************/
+    void getUIMessage(char *pmsg);
+
 private slots:
     /********************************************************
      *  Function:   on_cltSendButton_clicked()

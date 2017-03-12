@@ -17,7 +17,7 @@
  *  Function:       readSockets(int *clients, int numClients, fd_set *rset)
  *                      int *clients: array of client socket descriptors
  *                      int numClients: total number of clients in the clients array
- *                      fd_set *rset: pointer to the set containing the client descriptors
+ *                      fd_set *rset: pointer to the set containing the ready client descriptors
  *
  *  Programmer:     Robert Arendac
  *
@@ -33,5 +33,23 @@
  *******************************************************/
 void readSockets(int *clients, int numClients);
 
+/********************************************************
+ *  Function:       closeSocket(int sck, fd_set *allset, int *clients, int index)
+ *                      int sck: the socket to close
+ *                      fd_set *allset: pointer to the set containing all client descriptors
+ *                      int *clients: array of client socket descriptors
+ *                      int index: index where the socket to close is in the clients array
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      A message box will pop up notifying the user that a client has disconnected, should
+ *      be changed so that the client list is updated instead.  Will then close the socket
+ *******************************************************/
+void closeSocket(int sck, fd_set *allset, int *clients, int index);
 
 #endif // SERVER_H

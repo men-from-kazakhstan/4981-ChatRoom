@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "server.h"
 #include "serverwindow.h"
 
@@ -11,8 +12,8 @@
  * send message
  */
 
-
-void readSockets(int *clients, int numClients, fd_set *rset) {
+/* Read the sockets that are ready to send data */
+void readSockets(int *clients, int numClients, fd_set *rset, fd_set *allset) {
     int curSck;
     char msg[BUFLEN];
     char *pmsg;
@@ -30,20 +31,33 @@ void readSockets(int *clients, int numClients, fd_set *rset) {
             bytesToRead = BUFLEN;
             pmsg = msg;
 
-            while ((bytesRead = read(curSck, pmsg, bytesToRead)) > 0) {
-                pmsg += bytesRead;
-                bytesToRead -= bytesRead;
+            while (bytesToRead > 0) {
+                if ((bytesRead = read(curSck, pmsg, bytesToRead)) > 0) {
+                    pmsg += bytesRead;
+                    bytesToRead -= bytesRead;
+                }
             }
 
             // TODO: MATT GOERWELL
             // Extract ID
             // Echo
 
-
+            if (bytesRead == 0) {
+                closeSocket(curSck, allset, clients, i);
+            }
         }
     }
 }
 
-void closeSocket(ServerWindow *sw, int sck, fd_set *allset, int *clients) {
+/* Notify user and then close a socket */
+void closeSocket(int sck, fd_set *allset, int *clients, int index) {
+    QMessageBox msgbox;
+    char msg[BUFLEN];
+    sprintf(msg, "Client %d has disconnected", sck);
+    msgbox.setText(msg);
+    msgbox.exec();
 
+    close(sck);
+    FD_CLR(sck, allset);
+    clients[index] = -1;
 }

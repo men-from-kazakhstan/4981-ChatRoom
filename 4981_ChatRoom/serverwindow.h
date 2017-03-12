@@ -3,6 +3,8 @@
 #ifndef SERVERWINDOW_H
 #define SERVERWINDOW_H
 
+#define CLIENT_SIZE 100
+
 #include <QMainWindow>
 
 namespace Ui {
@@ -18,7 +20,21 @@ public:
     explicit ServerWindow(QWidget *parent = 0); // constructor
     ~ServerWindow(); // destructor
 
-    void clientDisconnect(int client);
+    /********************************************************
+     *  Function:       updateClients(int client)
+     *                      int client: ID of the client to be added
+     *
+     *  Programmer:     Robert Arendac
+     *
+     *  Created:        Mar 11 2017
+     *
+     *  Modified:
+     *
+     *  Desc:
+     *      Adds a new client to the end of the client list in the server
+     *      window.
+     *******************************************************/
+    void updateClients(int client);
 
 private slots:
     /********************************************************
