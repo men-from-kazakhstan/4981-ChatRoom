@@ -17,16 +17,20 @@
 
 #define INPUTBUFF 32
 
-extern struct sockaddr_in clientAddr;
-extern int clt_socket;
-extern char cltUsername[INPUTBUFF];
-extern char cltPort[INPUTBUFF];
-extern char cltIP[INPUTBUFF];
+struct ClientInfo{
+    struct sockaddr_in cltAddr;
+    int cltSock;
+    char username[INPUTBUFF];
+};
 
-int setupClientSocket(QWidget *parent, int *sock, sockaddr_in cltAddr, char port[INPUTBUFF], char ip[INPUTBUFF]);
+int setupClientSocket(QWidget *parent);
 
 bool validUsername(QString username, QWidget *parent);
-bool validPort(QString port, QWidget *parent);
+bool validClientPort(QString port, QWidget *parent);
 bool validIP(QString ip, QWidget *parent);
+
+void concatUsername(char *username);
+void concatPort(char *port);
+void concatIP(char *ip);
 
 #endif // CLIENT_H

@@ -29,16 +29,20 @@ SOURCES += main.cpp\
     clientwindow.cpp \
     configdialog.cpp \
     client.cpp \
-    server.cpp
+    server.cpp \
+    shared.cpp
 
 HEADERS  += mainwindow.h \
     serverwindow.h \
     clientwindow.h \
     configdialog.h \
     client.h \
-    server.h
+    server.h \
+    shared.h
 
 FORMS    += mainwindow.ui \
     serverwindow.ui \
     clientwindow.ui \
     configdialog.ui
+
+CONFIG += console

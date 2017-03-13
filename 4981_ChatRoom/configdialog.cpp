@@ -28,52 +28,32 @@ ConfigDialog::~ConfigDialog()
 /* config dialog OK button event handler */
 void ConfigDialog::on_cnfgOkButton_clicked()
 {
-    int validFlag = 0;
+    int validFlag = 1;
 
     // check for valid username
-    if(validUsername(ui->cnfgUsernameEdit->text(), this))
-    {
-        // if valid copy the username to a char array
-        sprintf(cltUsername, ui->cnfgUsernameEdit->text().toStdString().c_str());
-    }
-    else
+    if(!validUsername(ui->cnfgUsernameEdit->text(), this))
     {
         ui->cnfgUsernameEdit->clear(); // clear the username edit text
-        validFlag = 1;
+        validFlag = 0;
     }
 
     // check for valid port
-    if(validPort(ui->cnfgPortEdit->text(), this))
-    {
-        // if valid copy the port to a char array
-        sprintf(cltPort, ui->cnfgPortEdit->text().toStdString().c_str());
-        //cltPort = ui->cnfgPortEdit->text().toInt();
-    }
-    else
+    if(!validClientPort(ui->cnfgPortEdit->text(), this))
     {
         ui->cnfgPortEdit->clear(); // clear the username edit text
-        validFlag = 1;
+        validFlag = 0;
     }
 
     // check for valid IP
-    if(validIP(ui->cnfgServerIPEdit->text(), this))
-    {
-        // if valid copy the IP to a char array
-        sprintf(cltIP, ui->cnfgServerIPEdit->text().toStdString().c_str());
-    }
-    else
+    if(!validIP(ui->cnfgServerIPEdit->text(), this))
     {
         ui->cnfgServerIPEdit->clear(); // clear the username edit text
-        validFlag = 1;
+        validFlag = 0;
     }
 
     // check if any of the field were invalid
-    if(validFlag == 0)
+    if(validFlag)
     {
         this->close(); // close the current window
-    }
-    else
-    {
-        validFlag = 0;
     }
 }

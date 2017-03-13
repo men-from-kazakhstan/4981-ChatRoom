@@ -1,30 +1,24 @@
 #include "client.h"
 
-struct sockaddr_in clientAddr;
-int clt_socket;
-char cltUsername[INPUTBUFF];
-char cltPort[INPUTBUFF];
-char cltIP[INPUTBUFF];
+struct ClientInfo cltInfo;
 
-int setupClientSocket(QWidget *parent, int *sock, sockaddr_in cltAddr, char port[INPUTBUFF], char ip[INPUTBUFF])
+int setupClientSocket(QWidget *parent)
 {
-    int _port = atoi(port);
-
-    if((*sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    //int _port = atoi(port);
+    if((cltInfo.cltSock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         QMessageBox::information(parent, "Error", "Failure to create socket");
         return -1;
     }
     else
     {
-        QMessageBox::information(parent, "Info", "Socket created");
+        //QMessageBox::information(parent, "Info", "Socket created");
+        printf("%s\n", "Client Socket Created");
     }
 
-    cltAddr.sin_family = AF_INET;
-    cltAddr.sin_addr.s_addr = inet_addr(ip);
-    cltAddr.sin_port = htons(_port);
+    cltInfo.cltAddr.sin_family = AF_INET;
 
-    if(connect(*sock, (struct sockaddr *)&cltAddr, sizeof(cltAddr)) < 0)
+    if(connect(cltInfo.cltSock, (struct sockaddr *)&cltInfo.cltAddr, sizeof(cltInfo.cltAddr)) < 0)
     {
         QMessageBox::information(parent, "Error", "Failure to connect to server");
         return -1;
@@ -32,6 +26,7 @@ int setupClientSocket(QWidget *parent, int *sock, sockaddr_in cltAddr, char port
     else
     {
         QMessageBox::information(parent, "Info", "Connected to server");
+        //printf("%s\n", "Client Connected to Server");
     }
 
     return 0;
@@ -40,9 +35,16 @@ int setupClientSocket(QWidget *parent, int *sock, sockaddr_in cltAddr, char port
 
 bool validUsername(QString username, QWidget *parent)
 {
-    char temp[INPUTBUFF];
+    char tempUsername[INPUTBUFF];
 
-    sprintf(temp, username.toStdString().c_str());
+    sprintf(tempUsername, username.toStdString().c_str());
+
+    if(username.length() == 0) // empty
+    {
+
+        gethostname(cltInfo.username, INPUTBUFF);
+        return true;
+    }
 
     if(username.length() > 16 || username.length() < 4)
     {
@@ -50,45 +52,51 @@ bool validUsername(QString username, QWidget *parent)
         return false;
     }
 
-    for(unsigned int i = 0; i < strlen(temp); i++)
+    for(unsigned int i = 0; i < strlen(tempUsername); i++)
     {
-        if(isspace(temp[i]))
+        if(isspace(tempUsername[i]))
         {
             QMessageBox::information(parent, "Error", "Error: Username must not contain spaces");
             return false;
         }
     }
+
+    strcpy(cltInfo.username, tempUsername);
     return true;
 }
 
 
-bool validPort(QString port, QWidget *parent)
+bool validClientPort(QString port, QWidget *parent)
 {
-    char temp[INPUTBUFF];
+    char tempPort[INPUTBUFF];
+    int _port;
+    sprintf(tempPort, port.toStdString().c_str());
+    _port = atoi(tempPort);
 
-    sprintf(temp, port.toStdString().c_str());
-
-    if(strlen(temp) == 0)
+    if(port.length() == 0)
     {
-        QMessageBox::information(parent, "Error", "Error: Must enter port");
-        return false;
+        //QMessageBox::information(parent, "Error", "Error: Must enter port");
+        cltInfo.cltAddr.sin_port = htons(7000);
+        return true;
     }
 
-    for(unsigned int i = 0; i < strlen(temp); i++)
+    for(unsigned int i = 0; i < strlen(tempPort); i++)
     {
-        if(!isdigit(temp[i]))
+        if(!isdigit(tempPort[i]))
         {
             QMessageBox::information(parent, "Error", "Error: Port must only contain digits");
             return false;
         }
 
-        if(isspace(temp[i]))
+        if(isspace(tempPort[i]))
         {
             QMessageBox::information(parent, "Error", "Error: Port must not contain spaces");
             return false;
         }
     }
 
+    cltInfo.cltAddr.sin_port = htons(_port);
+    //inet_pton(AF_INET, tempPort, &(cltInfo.cltAddr.sin_port));
     return true;
 }
 
@@ -96,11 +104,11 @@ bool validPort(QString port, QWidget *parent)
 bool validIP(QString ip, QWidget *parent)
 {
     struct hostent *hp;
-    char temp[INPUTBUFF];
+    char tempIP[INPUTBUFF];
 
-    sprintf(temp, ip.toStdString().c_str());
+    sprintf(tempIP, ip.toStdString().c_str());
 
-    if((hp = gethostbyname(temp)) == NULL)
+    if((hp = gethostbyname(tempIP)) == NULL)
     {
         switch(h_errno)
         {
@@ -122,7 +130,29 @@ bool validIP(QString ip, QWidget *parent)
         }
     }
 
-    QMessageBox::information(parent, "Info", "Valid Host");
-
+    cltInfo.cltAddr.sin_addr.s_addr = inet_addr(tempIP);
+    inet_pton(AF_INET, tempIP, &(cltInfo.cltAddr.sin_addr));
+    //QMessageBox::information(parent, "Info", "Valid Host");
+    printf("%s\n", "Valid host");
     return true;
+}
+
+void concatUsername(char *username)
+{
+    strcat(username, cltInfo.username);
+}
+
+
+void concatPort(char *port)
+{
+    char tmpPort[INPUTBUFF];
+    sprintf(tmpPort, "%hu",htons(cltInfo.cltAddr.sin_port));
+    strcat(port, tmpPort);
+}
+
+
+void concatIP(char *ip)
+{
+    char *tmpIP= inet_ntoa(cltInfo.cltAddr.sin_addr);
+    strcat(ip, tmpIP);
 }

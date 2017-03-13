@@ -14,10 +14,8 @@
 
 #define INPUTBUFF 32
 
-extern struct sockaddr_in serverAddr, newCltAddr;
-extern int srv_socket;
-extern char srvPort[INPUTBUFF];
-
-int setupServerSocket(QWidget* parent, int *sock, sockaddr_in srvAddr, sockaddr_in newAddr, char port[INPUTBUFF]);
+int setupServerSocket(QWidget* parent);
+bool validServerPort(QString port, QWidget *parent);
+int monitorConnections(QWidget* parent);
 
 #endif // SERVER_H

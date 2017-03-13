@@ -39,14 +39,14 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ConfigDialog *cd = new ConfigDialog();
     cd->exec();
 
-    strcat(usernameDisplay, cltUsername);
-    strcat(portDisplay, cltPort);
-    strcat(ipDisplay, cltIP);
+    concatUsername(usernameDisplay);
+    concatPort(portDisplay);
+    concatIP(ipDisplay);
     ui->cltConfigDisplay->append(usernameDisplay);
     ui->cltConfigDisplay->append(portDisplay);
     ui->cltConfigDisplay->append(ipDisplay);
 
-    setupClientSocket(this, &clt_socket, clientAddr, cltPort, cltIP);
+    setupClientSocket(this);
 }
 
 /* destructor */
