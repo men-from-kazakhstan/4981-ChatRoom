@@ -24,7 +24,7 @@
  *  Desc:
  *      Wraps the send() call into a function which performs error checking
  *******************************************************/
-int sendMsg(int sockfd, char *msg, size_t msgSize);
+int sendMsg(int sockfd, const char *msg, size_t msgSize);
 
 
 #endif // WRAPPERS_H
