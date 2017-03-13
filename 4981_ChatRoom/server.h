@@ -14,7 +14,7 @@
 #define BUFLEN 512  // Maximum size of a message
 
 /********************************************************
- *  Function:       readSockets(int *clients, int numClients, fd_set *rset)
+ *  Function:       monitorSockets(int *clients, int numClients, fd_set *rset)
  *                      int *clients: array of client socket descriptors
  *                      int numClients: total number of clients in the clients array
  *                      fd_set *rset: pointer to the set containing the ready client descriptors
@@ -31,7 +31,7 @@
  *      to echo the message to the appropriate clients.  Will close sockets
  *      if nothing is read.
  *******************************************************/
-void readSockets(int *clients, int numClients);
+void monitorSockets(int *clients, int numClients);
 
 /********************************************************
  *  Function:       closeSocket(int sck, fd_set *allset, int *clients, int index)
@@ -53,7 +53,7 @@ void readSockets(int *clients, int numClients);
 void closeSocket(int sck, fd_set *allset, int *clients, int index);
 
 /********************************************************
- *  Function:       extractID(int numClients, fd_set *rset, int *clients, fd_set *allset)
+ *  Function:       checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)
  *                      int numClients: total number of clients
  *                      fd_set *rset: pointer to the set containing ready client descriptors
  *                      int *clients: array of client socket descriptors
@@ -70,10 +70,10 @@ void closeSocket(int sck, fd_set *allset, int *clients, int index);
  *      it extracts the message written to them, before passing it on to the determine recipients
  *      state. It also handles closing the socket, if that was the client request.
  *******************************************************/
-void extractID(int numClients, fd_set *rset, int *clients, fd_set *allset);
+void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset);
 
 /********************************************************
- *  Function:       determineRecipients(const char *message, int senderSocket, int numClients, int *clients)
+ *  Function:       determineRecepients(const char *message, int senderSocket, int numClients, int *clients)
  *                      const char *message: the message to send
  *                      int senderSocket: the fileDescriptor value for the message sender
  *                      int numClients: total number of clients
@@ -90,6 +90,6 @@ void extractID(int numClients, fd_set *rset, int *clients, fd_set *allset);
  *      original sender. If they meet these criteria, it then echoes the message to them using the
  *      sendMsg() function
  *******************************************************/
-void determineRecipients(const char *message, int senderSocket, int numClients, int *clients);
+void determineRecepients(const char *message, int senderSocket, int numClients, int *clients);
 
 #endif // SERVER_H

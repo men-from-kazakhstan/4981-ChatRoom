@@ -14,20 +14,20 @@
  */
 
 /* Read the sockets that are ready to send data */
-void readSockets(int *clients, int numClients, fd_set *rset, fd_set *allset) {
+void monitorSockets(int *clients, int numClients, fd_set *rset, fd_set *allset) {
 
     //Make select call
 
     //check for new connection
 
-    //call extract ID (do this regardless of if a new client has connected or not.
+    //call checkClients (do this regardless of if a new client has connected or not.
 
 }
 
 /*
  *  Check each client to see if it has a message.
  */
-void extractID(int numClients, fd_set *rset, int *clients, fd_set *allset) {
+void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset) {
 
     char msg[BUFLEN];
     char *pmsg;
@@ -50,7 +50,7 @@ void extractID(int numClients, fd_set *rset, int *clients, fd_set *allset) {
                 bytesToRead -= bytesRead;
             }
             //determine who should get the message
-            determineRecipients(msg,sockfd,numClients,clients);
+            determineRecepients(msg,sockfd,numClients,clients);
 
             //close request received
             if (bytesRead == 0) {
@@ -61,9 +61,9 @@ void extractID(int numClients, fd_set *rset, int *clients, fd_set *allset) {
 }
 
 /*
- * Mtehod that ensures a client doesn't self-echo
+ * Method that ensures a client doesn't self-echo
  */
-void determineRecipients(const char *message, int senderSocket, int numClients, int *clients) {
+void determineRecepients(const char *message, int senderSocket, int numClients, int *clients) {
     int sockfd;
     //loop through all possible clients.
     for (int i = 0; i < numClients; i++) {
