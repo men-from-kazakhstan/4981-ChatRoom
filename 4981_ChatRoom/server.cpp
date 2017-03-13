@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include "server.h"
 #include "serverwindow.h"
+#include "wrappers.h"
 
 /*
  * Read sockets
@@ -14,38 +15,66 @@
 
 /* Read the sockets that are ready to send data */
 void readSockets(int *clients, int numClients, fd_set *rset, fd_set *allset) {
-    int curSck;
+
+    //Make select call
+
+    //check for new connection
+
+    //call extract ID (do this regardless of if a new client has connected or not.
+
+}
+
+/*
+ *  Check each client to see if it has a message.
+ */
+void extractID(int numClients, fd_set *rset, int *clients, fd_set *allset) {
+
     char msg[BUFLEN];
     char *pmsg;
+    int sockfd;
     int bytesRead;
     int bytesToRead;
-
-    for (int i = 0; i <= numClients; i++) {
-
-        //Check if client is connected
-        if ((curSck = clients[i]) < 0) {
+    //loop through all possible clients
+    for (int i = 0; i < numClients; i++) {
+        //check to see if current client exists
+        if ((sockfd = clients[i]) < 0) {
             continue;
         }
-
-        if (FD_ISSET(curSck, rset)) {
+        //check to see if current client is signaled
+        if (FD_ISSET(sockfd,rset)) {
             bytesToRead = BUFLEN;
             pmsg = msg;
-
-            while (bytesToRead > 0) {
-                if ((bytesRead = read(curSck, pmsg, bytesToRead)) > 0) {
-                    pmsg += bytesRead;
-                    bytesToRead -= bytesRead;
-                }
+            //read message
+            while ((bytesRead = read(sockfd,pmsg,bytesToRead)) > 0) {
+                pmsg += bytesRead;
+                bytesToRead -= bytesRead;
             }
+            //determine who should get the message
+            determineRecipients(msg,sockfd,numClients,clients);
 
-            // TODO: MATT GOERWELL
-            // Extract ID
-            // Echo
-
+            //close request received
             if (bytesRead == 0) {
-                closeSocket(curSck, allset, clients, i);
+                closeSocket(sockfd, allset, clients, i);
             }
         }
+    }
+}
+
+/*
+ * Mtehod that ensures a client doesn't self-echo
+ */
+void determineRecipients(const char *message, int senderSocket, int numClients, int *clients) {
+    int sockfd;
+    //loop through all possible clients.
+    for (int i = 0; i < numClients; i++) {
+        //sheck client slot
+        sockfd = clients[i];
+        // If client doesn't exist, or is the original sender
+        if (sockfd < 0 || sockfd == senderSocket) {
+            continue;
+        }
+        //send() wrapper function.
+        sendMsg(sockfd,message,BUFLEN);
     }
 }
 

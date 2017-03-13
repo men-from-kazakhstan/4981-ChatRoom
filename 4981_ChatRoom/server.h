@@ -52,4 +52,44 @@ void readSockets(int *clients, int numClients);
  *******************************************************/
 void closeSocket(int sck, fd_set *allset, int *clients, int index);
 
+/********************************************************
+ *  Function:       extractID(int numClients, fd_set *rset, int *clients, fd_set *allset)
+ *                      int numClients: total number of clients
+ *                      fd_set *rset: pointer to the set containing ready client descriptors
+ *                      int *clients: array of client socket descriptors
+ *                      fd_set *allset: pointer to the set containing all client descriptors
+ *
+ *  Programmer:     Matt Goerwell
+ *
+ *  Created:        Mar 12 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      This loops through all possible clients in order to determine if they are set. If they are,
+ *      it extracts the message written to them, before passing it on to the determine recipients
+ *      state. It also handles closing the socket, if that was the client request.
+ *******************************************************/
+void extractID(int numClients, fd_set *rset, int *clients, fd_set *allset);
+
+/********************************************************
+ *  Function:       determineRecipients(const char *message, int senderSocket, int numClients, int *clients)
+ *                      const char *message: the message to send
+ *                      int senderSocket: the fileDescriptor value for the message sender
+ *                      int numClients: total number of clients
+ *                      int *clients: array of client socket descriptors
+ *
+ *  Programmer:     Matt Goerwell
+ *
+ *  Created:        Mar 12 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      This loops through all possible clients in order to determine if they exist, and aren't the
+ *      original sender. If they meet these criteria, it then echoes the message to them using the
+ *      sendMsg() function
+ *******************************************************/
+void determineRecipients(const char *message, int senderSocket, int numClients, int *clients);
+
 #endif // SERVER_H
