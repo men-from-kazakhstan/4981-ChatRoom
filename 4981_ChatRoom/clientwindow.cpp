@@ -58,5 +58,11 @@ ClientWindow::~ClientWindow()
 /* clients message send button event handler */
 void ClientWindow::on_cltSendButton_clicked()
 {
+    char x[BUFLEN];
+    formatMessage("Hello","127.0.0.1","Matt Goerwell",x);
+    puts(x);
+}
 
+void ClientWindow::getUIMessage(char *pmsg) {
+    sprintf(pmsg, ui->cltChatEdit->toPlainText().toStdString().c_str());
 }

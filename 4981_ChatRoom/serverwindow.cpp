@@ -16,6 +16,7 @@ ServerWindow::ServerWindow(QWidget *parent) :
     ui(new Ui::ServerWindow)
 {
     ui->setupUi(this);
+
 }
 
 /* destructor */
@@ -24,7 +25,7 @@ ServerWindow::~ServerWindow()
     delete ui;
 }
 
-/* server start button event handler*/
+/* server start button event handler */
 void ServerWindow::on_srvStartStopButton_clicked()
 {
     // check for valid port
@@ -37,4 +38,11 @@ void ServerWindow::on_srvStartStopButton_clicked()
     {
         setupServerSocket(this);
     }
+}
+
+/* Add a new client to the server window */
+void ServerWindow::updateClients(int client) {
+    char newClient[CLIENT_SIZE];
+    sprintf(newClient, "%d", client);
+    ui->srvClientList->addItem(newClient);
 }
