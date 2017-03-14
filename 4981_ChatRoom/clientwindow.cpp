@@ -15,15 +15,43 @@
 #include "configdialog.h"
 #include "client.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <QMessageBox>
+
 /* constructor */
 ClientWindow::ClientWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ClientWindow)
 {
+    // text to display config info
+    char usernameDisplay[64] = "Username: ";
+    char portDisplay[64] = "Port: ";
+    char ipDisplay[64] = "Server: ";
+
     ui->setupUi(this);
 
     ConfigDialog *cd = new ConfigDialog();
     cd->exec();
+
+    // concatinate user entered data to display text
+    concatUsername(usernameDisplay);
+    concatPort(portDisplay);
+    concatIP(ipDisplay);
+
+    // display config data
+    ui->cltConfigDisplay->append(usernameDisplay);
+    ui->cltConfigDisplay->append(portDisplay);
+    ui->cltConfigDisplay->append(ipDisplay);
+
+    // setup to the clients TCP socket
+    setupClientSocket(this);
 }
 
 /* destructor */
@@ -40,6 +68,7 @@ void ClientWindow::on_cltSendButton_clicked()
     puts(x);
 }
 
-void ClientWindow::getUIMessage(char *pmsg) {
+void ClientWindow::getUIMessage(char *pmsg)
+{
     sprintf(pmsg, ui->cltChatEdit->toPlainText().toStdString().c_str());
 }

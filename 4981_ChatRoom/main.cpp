@@ -1,3 +1,7 @@
+/****************************************************************
+ * This is the main entry point of the program
+ ***************************************************************/
+
 #include "mainwindow.h"
 #include <QApplication>
 
