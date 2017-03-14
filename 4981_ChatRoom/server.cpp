@@ -188,40 +188,22 @@ int monitorConnections(QWidget* parent)
  *  Desc:
  *      Responsible for validating the the port the user
  *******************************************************/
-bool validServerPort(QString port, QWidget *parent)
+bool validServerPort(char *port, QWidget *parent)
 {
-    char tempPort[INPUTBUFF];
-    int _port;
+    int tmpPort;
 
-    // convert QString to a char*
-    sprintf(tempPort, port.toStdString().c_str());
-    _port = atoi(tempPort);
-
-    // if nothing was entered (using default)
-    if(port.length() == 0)
+    // check if nothing was entered and display error if so
+    if(strlen(port) == 0)
     {
-        serverAddr.sin_port = htons(7000);
-        return true;
+        QMessageBox::information(parent, "Error", "Error: You must enter a port number");
+        return false;
     }
 
-    // check for non digits and spaces
-    for(unsigned int i = 0; i < strlen(tempPort); i++)
-    {
-        if(!isdigit(tempPort[i]))
-        {
-            QMessageBox::information(parent, "Error", "Error: Port must only contain digits");
-            return false;
-        }
+    tmpPort = atoi(port);  // convert char* to int
 
-        if(isspace(tempPort[i]))
-        {
-            QMessageBox::information(parent, "Error", "Error: Port must not contain spaces");
-            return false;
-        }
-    }
 
     // assign port
-    serverAddr.sin_port = htons(_port);
+    serverAddr.sin_port = htons(tmpPort);
     return true;
 }
 

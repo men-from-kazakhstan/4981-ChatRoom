@@ -16,7 +16,18 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ConfigDialog)
 {
+    char tmpUsername[INPUTBUFF];
     ui->setupUi(this); // display configuration dialog
+
+    // set the port edit text to only take ints
+    ui->cnfgPortEdit->setValidator(new QIntValidator);
+    // set port to default value
+    ui->cnfgPortEdit->setText("7000");
+
+    // set username to default value
+    gethostname(tmpUsername, INPUTBUFF); // get system name
+    ui->cnfgUsernameEdit->setText(tmpUsername);
+
 }
 
 /* destructor */
@@ -30,22 +41,30 @@ void ConfigDialog::on_cnfgOkButton_clicked()
 {
     int validFlag = 1;
 
+    // convert user input from QString to char*
+    char cUsername[INPUTBUFF];
+    char cPort[INPUTBUFF];
+    char cIP[INPUTBUFF];
+    sprintf(cUsername, ui->cnfgUsernameEdit->text().toStdString().c_str());
+    sprintf(cPort, ui->cnfgPortEdit->text().toStdString().c_str());
+    sprintf(cIP, ui->cnfgServerIPEdit->text().toStdString().c_str());
+
     // check for valid username
-    if(!validUsername(ui->cnfgUsernameEdit->text(), this))
+    if(!validUsername(cUsername, this))
     {
         ui->cnfgUsernameEdit->clear(); // clear the username edit text
         validFlag = 0;
     }
 
     // check for valid port
-    if(!validClientPort(ui->cnfgPortEdit->text(), this))
+    if(!validClientPort(cPort, this))
     {
         ui->cnfgPortEdit->clear(); // clear the username edit text
         validFlag = 0;
     }
 
     // check for valid IP
-    if(!validIP(ui->cnfgServerIPEdit->text(), this))
+    if(!validIP(cIP, this))
     {
         ui->cnfgServerIPEdit->clear(); // clear the username edit text
         validFlag = 0;

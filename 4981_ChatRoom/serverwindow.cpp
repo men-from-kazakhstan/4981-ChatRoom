@@ -17,6 +17,11 @@ ServerWindow::ServerWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // set the port edit text to only take ints
+    ui->srvPortEdit->setValidator(new QIntValidator);
+    // set port to default value
+    ui->srvPortEdit->setText("7000");
+
 }
 
 /* destructor */
@@ -28,8 +33,12 @@ ServerWindow::~ServerWindow()
 /* server start button event handler */
 void ServerWindow::on_srvStartStopButton_clicked()
 {
+    // convert user input from QString to char*
+    char cPort[INPUTBUFF];
+    sprintf(cPort, ui->srvPortEdit->text().toStdString().c_str());
+
     // check for valid port
-    if(!validServerPort(ui->srvPortEdit->text(), this))
+    if(!validServerPort(cPort, this))
     {
 
         ui->srvPortEdit->clear(); // clear the username edit text
@@ -41,7 +50,8 @@ void ServerWindow::on_srvStartStopButton_clicked()
 }
 
 /* Add a new client to the server window */
-void ServerWindow::updateClients(int client) {
+void ServerWindow::updateClients(int client)
+{
     char newClient[CLIENT_SIZE];
     sprintf(newClient, "%d", client);
     ui->srvClientList->addItem(newClient);

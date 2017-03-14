@@ -30,6 +30,7 @@ ClientWindow::ClientWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ClientWindow)
 {
+    // text to display config info
     char usernameDisplay[64] = "Username: ";
     char portDisplay[64] = "Port: ";
     char ipDisplay[64] = "Server: ";
@@ -39,13 +40,17 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ConfigDialog *cd = new ConfigDialog();
     cd->exec();
 
+    // concatinate user entered data to display text
     concatUsername(usernameDisplay);
     concatPort(portDisplay);
     concatIP(ipDisplay);
+
+    // display config data
     ui->cltConfigDisplay->append(usernameDisplay);
     ui->cltConfigDisplay->append(portDisplay);
     ui->cltConfigDisplay->append(ipDisplay);
 
+    // setup to the clients TCP socket
     setupClientSocket(this);
 }
 
@@ -63,6 +68,7 @@ void ClientWindow::on_cltSendButton_clicked()
     puts(x);
 }
 
-void ClientWindow::getUIMessage(char *pmsg) {
+void ClientWindow::getUIMessage(char *pmsg)
+{
     sprintf(pmsg, ui->cltChatEdit->toPlainText().toStdString().c_str());
 }

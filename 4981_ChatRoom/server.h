@@ -22,7 +22,9 @@
 int setupServerSocket(QWidget* parent);
 int monitorConnections(QWidget* parent);
 
-bool validServerPort(QString port, QWidget *parent);
+//------- make function take in a char* instead of QString
+bool validServerPort(char *port, QWidget *parent);
+//-------
 
 void monitorSockets(int *clients, int numClients);
 void closeSocket(int sck, fd_set *allset, int *clients, int index);

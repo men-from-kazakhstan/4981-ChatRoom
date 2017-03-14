@@ -76,31 +76,26 @@ int setupClientSocket(QWidget *parent)
  *      enter a username then their system name is used
  *      by default
  *******************************************************/
-bool validUsername(QString username, QWidget *parent)
+bool validUsername(char *username, QWidget *parent)
 {
-    // convert Qstring to a char*
-    char tempUsername[INPUTBUFF];
-    sprintf(tempUsername, username.toStdString().c_str());
-
-    // check if nothing was entere (use default)
-    if(username.length() == 0) // empty
+    // check if nothing was entered and display error if so
+    if(strlen(username) == 0) // empty
     {
-        // get system name
-        gethostname(cltInfo.username, INPUTBUFF);
-        return true;
+      QMessageBox::information(parent, "Error", "Error: You must enter a username");
+      return false;
     }
 
     // check if between 4 and 16
-    if(username.length() > 16 || username.length() < 4)
+    if(strlen(username) > 16 || strlen(username) < 4)
     {
         QMessageBox::information(parent, "Error", "Error: Username must be between \n4 - 16 characters long");
         return false;
     }
 
     // check for spaces
-    for(unsigned int i = 0; i < strlen(tempUsername); i++)
+    for(unsigned int i = 0; i < strlen(username); i++)
     {
-        if(isspace(tempUsername[i]))
+        if(isspace(username[i]))
         {
             QMessageBox::information(parent, "Error", "Error: Username must not contain spaces");
             return false;
@@ -108,7 +103,7 @@ bool validUsername(QString username, QWidget *parent)
     }
 
     // assign username
-    strcpy(cltInfo.username, tempUsername);
+    strcpy(cltInfo.username, username);
     return true;
 }
 
@@ -132,40 +127,20 @@ bool validUsername(QString username, QWidget *parent)
  *      not contains any spaces. If user entered nothing the port
  *      7000 is used by default
  *******************************************************/
-bool validClientPort(QString port, QWidget *parent)
+bool validClientPort(char *port, QWidget *parent)
 {
-    char tempPort[INPUTBUFF];
-    int _port;
+    int tmpPort;
 
-    // convert QString to a char*
-    sprintf(tempPort, port.toStdString().c_str());
-    _port = atoi(tempPort);
-
-    // check if nothing was entered (use default)
-    if(port.length() == 0)
+    // check if nothing was entered and display error if so
+    if(strlen(port) == 0)
     {
-        cltInfo.cltAddr.sin_port = htons(7000);
-        return true;
+        QMessageBox::information(parent, "Error", "Error: You must enter a port number");
+        return false;
     }
 
-    // check for non digits and spaces
-    for(unsigned int i = 0; i < strlen(tempPort); i++)
-    {
-        if(!isdigit(tempPort[i]))
-        {
-            QMessageBox::information(parent, "Error", "Error: Port must only contain digits");
-            return false;
-        }
+    tmpPort = atoi(port);  // convert char* to int
 
-        if(isspace(tempPort[i]))
-        {
-            QMessageBox::information(parent, "Error", "Error: Port must not contain spaces");
-            return false;
-        }
-    }
-
-    // assign port
-    cltInfo.cltAddr.sin_port = htons(_port);
+    cltInfo.cltAddr.sin_port = htons(tmpPort);  // assign port
     return true;
 }
 
@@ -187,16 +162,12 @@ bool validClientPort(QString port, QWidget *parent)
  *  Desc:
  *      Checks for a valid ip using gethostbyname
  *******************************************************/
-bool validIP(QString ip, QWidget *parent)
+bool validIP(char *ip, QWidget *parent)
 {
     struct hostent *hp;
 
-    // convert the QString to a char*
-    char tempIP[INPUTBUFF];
-    sprintf(tempIP, ip.toStdString().c_str());
-
     // check for a valid IP
-    if((hp = gethostbyname(tempIP)) == NULL)
+    if((hp = gethostbyname(ip)) == NULL)
     {
         switch(h_errno)
         {
@@ -219,8 +190,7 @@ bool validIP(QString ip, QWidget *parent)
     }
 
     // assign IP
-    cltInfo.cltAddr.sin_addr.s_addr = inet_addr(tempIP);
-    inet_pton(AF_INET, tempIP, &(cltInfo.cltAddr.sin_addr));
+    cltInfo.cltAddr.sin_addr.s_addr = inet_addr(ip);
     printf("%s\n", "Client: Valid host");
     return true;
 }

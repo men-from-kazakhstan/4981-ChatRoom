@@ -29,12 +29,11 @@ struct ClientInfo{
     char username[INPUTBUFF];
 };
 
-
 int setupClientSocket(QWidget *parent);
 
-bool validUsername(QString username, QWidget *parent);
-bool validClientPort(QString port, QWidget *parent);
-bool validIP(QString ip, QWidget *parent);
+bool validUsername(char *username, QWidget *parent);
+bool validClientPort(char *port, QWidget *parent);
+bool validIP(char *ip, QWidget *parent);
 
 void concatUsername(char *username);
 void concatPort(char *port);
