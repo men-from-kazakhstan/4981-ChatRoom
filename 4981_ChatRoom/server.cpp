@@ -98,7 +98,9 @@ int setupServerSocket(QWidget* parent)
  *
  *  Created:        Mar 13 2017
  *
- *  Modified:
+ *  Modified:       March 15 2017 - Robert Arendac
+ *                      Fixed a couple bugs, mostly due to indexing and scope issues.
+ *                      Also added the checkClients() function.
  *
  *  Desc:
  *      Responsible for monitoring all the clients that

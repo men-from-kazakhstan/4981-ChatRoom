@@ -322,6 +322,22 @@ void formatMessage(const char *message, const char *IP, const char *username, ch
     sprintf(dest,"%s %s - %s: %s\n",timer, IP, username, message);
 }
 
-void sendToServer(char *msg, size_t msglen) {
+/********************************************************
+ *  Function:       void sendToServer(char *msg, size_t msglen)
+ *                      char *msg: message to send
+ *                      size_t msglen: length of message to send
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 15 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Simple function the ClientWindow class will call when it wants to send
+ *      a message to the server.
+ *******************************************************/
+void sendToServer(char *msg, size_t msglen)
+{
     sendMsg(cltInfo.cltSock, msg, msglen);
 }
