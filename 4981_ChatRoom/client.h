@@ -4,6 +4,7 @@
 #define CLIENT_H
 
 #include "clientwindow.h"
+#include "wrappers.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,5 +41,6 @@ void concatPort(char *port);
 void concatIP(char *ip);
 void getUserMessage(ClientWindow *cw, char *completeMsg, char *IP, char *username);
 void formatMessage(const char *message, const char *IP, const char *username, char* dest);
+void sendToServer(char *msg, size_t msglen);
 
 #endif // CLIENT_H
