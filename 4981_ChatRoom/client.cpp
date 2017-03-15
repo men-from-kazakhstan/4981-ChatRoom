@@ -321,3 +321,7 @@ void formatMessage(const char *message, const char *IP, const char *username, ch
     strftime(timer,BUFLEN,"<%b %d - %R>",timeinfo);
     sprintf(dest,"%s %s - %s: %s\n",timer, IP, username, message);
 }
+
+void sendToServer(char *msg, size_t msglen) {
+    sendMsg(cltInfo.cltSock, msg, msglen);
+}

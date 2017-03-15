@@ -110,11 +110,12 @@ int monitorConnections(QWidget* parent)
     int nready, maxfd, maxi, new_sd, client[FD_SETSIZE];
     socklen_t client_len;
     fd_set rset, allset;
+    int i;
 
     maxfd = srv_socket;
     maxi = -1;
 
-    for(int i = 0; i < FD_SETSIZE; i++)
+    for(i = 0; i < FD_SETSIZE; i++)
     {
         client[i] = -1;
     }
@@ -140,32 +141,37 @@ int monitorConnections(QWidget* parent)
             {
                 printf("%s\n", "\tServer: Client accepted");
             }
+
             printf(" Remote Address:  %s\n", inet_ntoa(client_addr.sin_addr));
 
-            for (int i = 0; i < FD_SETSIZE; i++)
+            for (i = 0; i < FD_SETSIZE; i++)
             {
                 if (client[i] < 0)
                 {
                     client[i] = new_sd;	// save descriptor
                     break;
                 }
-                if (i == FD_SETSIZE)
-                {
-                    printf ("Too many clients\n");
-                    exit(1);
-                }
-
-                FD_SET (new_sd, &allset);     // add new descriptor to set
-                if (new_sd > maxfd)
-                    maxfd = new_sd;	// for select
-
-                if (i > maxi)
-                    maxi = i;	// new max index in client[] array
-
-                if (--nready <= 0)
-                    continue;	// no more readable descriptors
             }
+
+            if (i == FD_SETSIZE)
+            {
+                printf ("Too many clients\n");
+                exit(1);
+            }
+
+            FD_SET (new_sd, &allset);     // add new descriptor to set
+
+            if (new_sd > maxfd)
+                maxfd = new_sd;	// for select
+
+            if (i > maxi)
+                maxi = i;	// new max index in client[] array
+
+            if (--nready <= 0)
+                continue;	// no more readable descriptors
+
         }
+        checkClients(maxi, &rset, client, &allset);
     }
     return 0;
 }
@@ -226,6 +232,7 @@ bool validServerPort(char *port, QWidget *parent)
  *      to echo the message to the appropriate clients.  Will close sockets
  *      if nothing is read.
  *******************************************************/
+/* Don't think we need this...
 void monitorSockets(int *clients, int numClients, fd_set *rset, fd_set *allset)
 {
 
@@ -236,7 +243,7 @@ void monitorSockets(int *clients, int numClients, fd_set *rset, fd_set *allset)
     //call checkClients (do this regardless of if a new client has connected or not.
 
 }
-
+*/
 
 /********************************************************
  *  Function:       checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)
@@ -245,7 +252,7 @@ void monitorSockets(int *clients, int numClients, fd_set *rset, fd_set *allset)
  *                      int *clients: array of client socket descriptors
  *                      fd_set *allset: pointer to the set containing all client descriptors
  *
- *  Programmer:     Matt Goerwell
+ *  Programmer:     Robert Arendac
  *
  *  Created:        Mar 12 2017
  *
@@ -258,14 +265,13 @@ void monitorSockets(int *clients, int numClients, fd_set *rset, fd_set *allset)
  *******************************************************/
 void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)
 {
-
     char msg[BUFLEN];
-    char *pmsg;
     int sockfd;
     int bytesRead;
     int bytesToRead;
+
     //loop through all possible clients
-    for (int i = 0; i < numClients; i++)
+    for (int i = 0; i <= numClients; i++)
     {
         //check to see if current client exists
         if ((sockfd = clients[i]) < 0)
@@ -276,13 +282,10 @@ void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)
         if (FD_ISSET(sockfd,rset))
         {
             bytesToRead = BUFLEN;
-            pmsg = msg;
+
             //read message
-            while ((bytesRead = read(sockfd,pmsg,bytesToRead)) > 0)
-            {
-                pmsg += bytesRead;
-                bytesToRead -= bytesRead;
-            }
+            bytesRead = read(sockfd, msg, bytesToRead);
+
             //determine who should get the message
             determineRecepients(msg,sockfd,numClients,clients);
 
@@ -318,7 +321,7 @@ void determineRecepients(const char *message, int senderSocket, int numClients, 
 {
     int sockfd;
     //loop through all possible clients.
-    for (int i = 0; i < numClients; i++)
+    for (int i = 0; i <= numClients; i++)
     {
         //sheck client slot
         sockfd = clients[i];
