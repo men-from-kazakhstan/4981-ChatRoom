@@ -28,3 +28,29 @@ int sendMsg(int sockfd, const char *msg, size_t msgSize)
 
     return bytesSent;
 }
+
+/********************************************************
+ *  Function:       getMsg(int sockfd, char *msg, size_t msgSize)
+ *                      int sockfd: socket descriptor to read from
+ *                      char *msg: message to read into
+ *                      size_t msgSize: size of the message to read
+ *
+ *  Returns:        Number of bytes read or -1 if recv() failed
+ *
+ *  Programmer:     Matt Goerwell
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Wraps the recv() call into a function which performs error checking
+ *******************************************************/
+int getMsg(int sockfd, char *msg, size_t msgSize) {
+    int bytesRead;
+    if ((bytesRead = recv(sockfd,msg,msgSize,0)) < 0) {
+        fprintf(stderr, "recv() failed with error: %s", strerror(errno));
+        return -1;
+    }
+    return bytesRead;
+}
