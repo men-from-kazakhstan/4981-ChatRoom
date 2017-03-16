@@ -25,8 +25,6 @@ private slots:
     void on_cltSendButton_clicked();
     void on_cltSaveButton_clicked();
 
-
-
 private:
     Ui::ClientWindow *ui;
 };

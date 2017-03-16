@@ -39,7 +39,7 @@ bool validIP(char *ip, QWidget *parent);
 void concatUsername(char *username);
 void concatPort(char *port);
 void concatIP(char *ip);
-void formatMessage(const char *message, const char *IP,ClientWindow *main);
+void processUserMessage(const char *message, ClientWindow *main);
 void updateHistory(std::string message);
 void receiveMessage(ClientWindow *main);
 void saveSession(QWidget * main);

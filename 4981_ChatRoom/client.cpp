@@ -12,8 +12,13 @@
 
 
 using namespace std;
+
+//client info struct
 struct ClientInfo cltInfo;
+//chat records
 std::vector<std::string> chatHistory;
+//client IP
+char localip[BUFLEN];
 
 /********************************************************
  *  Function:       int setupClientSocket(QWidget *parent);
@@ -26,11 +31,12 @@ std::vector<std::string> chatHistory;
  *
  *  Created:        Mar 13 2017
  *
- *  Modified:
+ *  Modified:       Mar 16 2017 Pereparing local IP ~ Matt
  *
  *  Desc:
  *      Responsible for socket creation. It creates the socket and
- *      attempts to connect to the server.
+ *      attempts to connect to the server. It also stores the local
+ *      IP address for later use.
  *******************************************************/
 int setupClientSocket(QWidget *parent)
 {
@@ -58,6 +64,12 @@ int setupClientSocket(QWidget *parent)
     {
         printf("%s\n", "Client: Connected to Server");
     }
+    //setting up local ip;
+    struct sockaddr_in local;
+    socklen_t addressLength = sizeof(local);
+    getsockname(cltInfo.cltSock, (struct sockaddr*)&local, &addressLength);
+    sprintf(localip, "%s", inet_ntoa(local.sin_addr));
+
     return 0;
 }
 
@@ -271,9 +283,8 @@ void concatIP(char *ip)
 }
 
 /********************************************************
- *  Function:       void formatMessage(char *message, char *IP, ClientWindow *main)
+ *  Function:       void processUserMessage(char *message, char *IP, ClientWindow *main)
  *                      char *message: buffer that holds message to be formatted.
- *                      char *IP: string containing the IP of the client sending the message
  *                      ClientWindow *main: The UI for the client that sent the message.
  *
  *  Programmer:     Matt Goerwell
@@ -287,22 +298,22 @@ void concatIP(char *ip)
  *      This will take the message passed into it and apply standard formatting rules.
  *      That is to say, It will prepend the message with the timestamp, username, and
  *      IP address of the sender. It will also colour code the username eventually.
+ *      Following this, it will call tehe methods required to store and send the
+ *      message.
  *******************************************************/
-void formatMessage(const char *message, const char *IP,ClientWindow *main)
+void processUserMessage(const char *message,ClientWindow *main)
 {
+    char temp[BUFLEN];
     char timer[BUFLEN];
+
     time_t timestamp;
     struct tm * timeinfo;
 
     time(&timestamp);
     timeinfo = localtime(&timestamp);
-    strftime(timer,BUFLEN,"<%b %d - %R> ",timeinfo);
-    std::string msg(timer);
-    msg.append(IP);
-    msg += " - ";
-    msg.append(cltInfo.username);
-    msg += ": ";
-    msg.append(message);
+    strftime(timer,BUFLEN,"<%b %d - %R>",timeinfo);
+    sprintf(temp,"%s %s - %s: %s",timer,localip,cltInfo.username,message);
+    std::string msg(temp);
 
     main->updateDisplay(msg.c_str());
     updateHistory(msg);
@@ -323,7 +334,8 @@ void formatMessage(const char *message, const char *IP,ClientWindow *main)
  *  This is primarily a helper function for the saveSession function.
  *  It stores messages in our chat history.
  *******************************************************/
-void updateHistory(std::string message) {
+void updateHistory(std::string message)
+{
     chatHistory.push_back(message);
 }
 
@@ -341,10 +353,11 @@ void updateHistory(std::string message) {
  *      This is our primary read loop for the client. It will endlessy Poll the server for
  *      new data, extract it, then update both the display and the chat history.
  *******************************************************/
-void receiveMessage(ClientWindow *main) {
+void receiveMessage(ClientWindow *main)
+{
     char msg[BUFLEN];
     while (true){
-        getMsg(cltInfo.cltSock,msg,BUFLEN);
+        getMsg(cltInfo.cltSock, msg, BUFLEN);
         string histMsg(msg);
         main->updateDisplay(histMsg.c_str());
         updateHistory(histMsg);
@@ -366,12 +379,15 @@ void receiveMessage(ClientWindow *main) {
  *  then cretes/opens a file at that location. It then loops through the message history and writes
  *  the contents to the file.
  *******************************************************/
-void saveSession(QWidget * main) {
-   QString filename = QFileDialog::getSaveFileName(main,"Save File","/home","Text Files (*.txt)");
+void saveSession(QWidget * main)
+{
+   QString filename = QFileDialog::getSaveFileName(main, "Save File", "/home", "Text Files (*.txt)");
    QFile handle(filename);
-   if (handle.open(QIODevice::ReadWrite)) {
+   if (handle.open(QIODevice::ReadWrite))
+   {
         QTextStream out(&handle);
-        for (auto& msg : chatHistory) {
+        for (auto& msg : chatHistory)
+        {
             QString temp = QString::fromStdString(msg);
             out << temp << endl;
         }

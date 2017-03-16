@@ -51,9 +51,10 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ui->cltConfigDisplay->append(ipDisplay);
 
     // setup to the clients TCP socket
-    if (setupClientSocket(this) != -1) {
+    if (setupClientSocket(this) != -1)
+    {
         //If we can connect properly, start our receiving thread ~Matt
-        std::thread reading(receiveMessage,this);
+        std::thread reading(receiveMessage, this);
         reading.detach();
     }
 }
@@ -83,7 +84,7 @@ void ClientWindow::on_cltSendButton_clicked()
 {
     char message[BUFLEN];
     getUIMessage(message);
-    formatMessage(message,"127.0.0.1",this);
+    processUserMessage(message, this);
 }
 
 /********************************************************
@@ -100,7 +101,8 @@ void ClientWindow::on_cltSendButton_clicked()
  *      clicked on the clients side, notifying
  *      that the user wants to save the chat to a file.
  *******************************************************/
-void ClientWindow::on_cltSaveButton_clicked() {
+void ClientWindow::on_cltSaveButton_clicked()
+{
     saveSession(this);
 }
 
@@ -117,7 +119,8 @@ void ClientWindow::on_cltSaveButton_clicked() {
  *  Desc:
  *      Takes the message passed in and writes it to the chat display.
  *******************************************************/
-void ClientWindow::updateDisplay(const char *msg) {
+void ClientWindow::updateDisplay(const char *msg)
+{
     ui->cltChatDisplay->append(msg);
 }
 

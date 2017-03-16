@@ -39,16 +39,18 @@ int sendMsg(int sockfd, const char *msg, size_t msgSize)
  *
  *  Programmer:     Matt Goerwell
  *
- *  Created:        Mar 11 2017
+ *  Created:        Mar 15 2017
  *
  *  Modified:
  *
  *  Desc:
  *      Wraps the recv() call into a function which performs error checking
  *******************************************************/
-int getMsg(int sockfd, char *msg, size_t msgSize) {
+int getMsg(int sockfd, char *msg, size_t msgSize)
+{
     int bytesRead;
-    if ((bytesRead = recv(sockfd,msg,msgSize,0)) < 0) {
+    if ((bytesRead = recv(sockfd, msg, msgSize, 0)) < 0)
+    {
         fprintf(stderr, "recv() failed with error: %s", strerror(errno));
         return -1;
     }
