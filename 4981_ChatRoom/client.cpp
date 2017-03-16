@@ -298,7 +298,7 @@ void concatIP(char *ip)
  *      This will take the message passed into it and apply standard formatting rules.
  *      That is to say, It will prepend the message with the timestamp, username, and
  *      IP address of the sender. It will also colour code the username eventually.
- *      Following this, it will call tehe methods required to store and send the
+ *      Following this, it will call the methods required to store and send the
  *      message.
  *******************************************************/
 void processUserMessage(const char *message,ClientWindow *main)
@@ -312,7 +312,7 @@ void processUserMessage(const char *message,ClientWindow *main)
     time(&timestamp);
     timeinfo = localtime(&timestamp);
     strftime(timer,BUFLEN,"<%b %d - %R>",timeinfo);
-    sprintf(temp,"%s %s - %s: %s",timer,localip,cltInfo.username,message);
+    sprintf(temp, "%s %s - %s: %s", timer, localip, cltInfo.username, message);
     std::string msg(temp);
 
     main->updateDisplay(msg.c_str());
