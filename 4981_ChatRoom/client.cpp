@@ -4,9 +4,16 @@
  ***************************************************************/
 
 #include "client.h"
+#include <iostream>
 #include <time.h>
+#include <QFileDialog>
+#include <QString>
+#include <QTextStream>
 
+
+using namespace std;
 struct ClientInfo cltInfo;
+std::vector<std::string> chatHistory;
 
 /********************************************************
  *  Function:       int setupClientSocket(QWidget *parent);
@@ -51,7 +58,6 @@ int setupClientSocket(QWidget *parent)
     {
         printf("%s\n", "Client: Connected to Server");
     }
-
     return 0;
 }
 
@@ -264,53 +270,25 @@ void concatIP(char *ip)
     strcat(ip, tmpIP);
 }
 
-
 /********************************************************
- *  Function:       char * getUserMessage(ClientWindow *cw, char *IP, char *username)
- *                      ClientWindow *cw: ClientWindow pointer in order to access the UI
- *                      char *completeMsg: buffer that holds the complete message to send
- *                      char *IP: string containing the IP of the client sending the message
- *                      char *username: client username
- *
- *  Programmer:     Robert Arendac
- *
- *  Created:        Mar 11 2017
- *
- *  Modified:
- *
- *  Desc:
- *      Will get the message entered by the user into the GUI.  Will then
- *      put a string with the IP and username appended to the front into the completeMsg buffer.
- *******************************************************/
-void getUserMessage(ClientWindow *cw, char *completeMsg, char *IP, char *username)
-{
-    char msg[BUFLEN];
-
-    cw->getUIMessage(msg);
-
-    sprintf(completeMsg, "%s %s: %s", IP, username, msg);
-}
-
-
-/********************************************************
- *  Function:       void formatMessage(char *message, char *IP, char *username)
+ *  Function:       void formatMessage(char *message, char *IP, ClientWindow *main)
  *                      char *message: buffer that holds message to be formatted.
  *                      char *IP: string containing the IP of the client sending the message
- *                      char *username: client username
- *                      char *dest: where the formatted message should be written.
+ *                      ClientWindow *main: The UI for the client that sent the message.
  *
  *  Programmer:     Matt Goerwell
  *
  *  Created:        Mar 11 2017
  *
- *  Modified:
+ *  Modified:       Mar 15 2017 - strings instead of char *
+ *                  Mar 16 2017 - Including display and send method calls
  *
  *  Desc:
  *      This will take the message passed into it and apply standard formatting rules.
  *      That is to say, It will prepend the message with the timestamp, username, and
  *      IP address of the sender. It will also colour code the username eventually.
  *******************************************************/
-void formatMessage(const char *message, const char *IP, const char *username, char *dest)
+void formatMessage(const char *message, const char *IP,ClientWindow *main)
 {
     char timer[BUFLEN];
     time_t timestamp;
@@ -318,26 +296,106 @@ void formatMessage(const char *message, const char *IP, const char *username, ch
 
     time(&timestamp);
     timeinfo = localtime(&timestamp);
-    strftime(timer,BUFLEN,"<%b %d - %R>",timeinfo);
-    sprintf(dest,"%s %s - %s: %s\n",timer, IP, username, message);
+    strftime(timer,BUFLEN,"<%b %d - %R> ",timeinfo);
+    std::string msg(timer);
+    msg.append(IP);
+    msg += " - ";
+    msg.append(cltInfo.username);
+    msg += ": ";
+    msg.append(message);
+
+    main->updateDisplay(msg.c_str());
+    updateHistory(msg);
+    sendToServer(msg.c_str(), BUFLEN);
 }
 
 /********************************************************
- *  Function:       void sendToServer(char *msg, size_t msglen)
- *                      char *msg: message to send
- *                      size_t msglen: length of message to send
+ *  Function:       void updateHistorystd::string message)
+ *                      string message: the message we intend to store.
  *
- *  Programmer:     Robert Arendac
+ *  Programmer:     Matt Goerwell
  *
  *  Created:        Mar 15 2017
  *
  *  Modified:
  *
  *  Desc:
+ *  This is primarily a helper function for the saveSession function.
+ *  It stores messages in our chat history.
+ *******************************************************/
+void updateHistory(std::string message) {
+    chatHistory.push_back(message);
+}
+
+/********************************************************
+ *  Function:       receiveMessage(ClientWindow *main)
+ *                      ClientWindow *main: a handle to the UI for message display
+ *
+ *  Programmer:     Matt Goerwell
+ *
+ *  Created:        Mar 16 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      This is our primary read loop for the client. It will endlessy Poll the server for
+ *      new data, extract it, then update both the display and the chat history.
+ *******************************************************/
+void receiveMessage(ClientWindow *main) {
+    char msg[BUFLEN];
+    while (true){
+        getMsg(cltInfo.cltSock,msg,BUFLEN);
+        string histMsg(msg);
+        main->updateDisplay(histMsg.c_str());
+        updateHistory(histMsg);
+    }
+}
+
+/********************************************************
+ *  Function:       void saveSession(Qwidget* main)
+ *                      QWidget * main: a pointer to the main window.
+ *
+ *  Programmer:     Matt Goerwell
+ *
+ *  Created:        Mar 15 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *  This is our Session saving method. It prompts the user to select a location to save their file,
+ *  then cretes/opens a file at that location. It then loops through the message history and writes
+ *  the contents to the file.
+ *******************************************************/
+void saveSession(QWidget * main) {
+   QString filename = QFileDialog::getSaveFileName(main,"Save File","/home","Text Files (*.txt)");
+   QFile handle(filename);
+   if (handle.open(QIODevice::ReadWrite)) {
+        QTextStream out(&handle);
+        for (auto& msg : chatHistory) {
+            QString temp = QString::fromStdString(msg);
+            out << temp << endl;
+        }
+        handle.close();
+   }
+
+}
+
+/********************************************************
+ *  Function:       void sendToServer(const char *msg, size_t msglen)
+ *                      const char *msg: message to send
+ *                      size_t msglen: length of message to send
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 15 2017
+ *
+ *  Modified:       Mar 16 2017 - Made the message const, since we shouldn't change it.
+ *
+ *  Desc:
  *      Simple function the ClientWindow class will call when it wants to send
  *      a message to the server.
  *******************************************************/
-void sendToServer(char *msg, size_t msglen)
+void sendToServer(const char *msg, size_t msglen)
 {
     sendMsg(cltInfo.cltSock, msg, msglen);
 }

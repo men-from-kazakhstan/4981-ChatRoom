@@ -286,7 +286,7 @@ void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)
             bytesToRead = BUFLEN;
 
             //read message
-            bytesRead = getMsg();
+            bytesRead = getMsg(sockfd,msg,BUFLEN);
 
             //determine who should get the message
             determineRecepients(msg,sockfd,numClients,clients);
