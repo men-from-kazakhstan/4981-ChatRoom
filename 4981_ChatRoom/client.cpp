@@ -301,7 +301,7 @@ void concatIP(char *ip)
  *      Following this, it will call the methods required to store and send the
  *      message.
  *******************************************************/
-void processUserMessage(const char *message,ClientWindow *main)
+void processUserMessage(const char *message, ClientWindow *main)
 {
     char temp[BUFLEN];
     char timer[BUFLEN];
@@ -311,7 +311,7 @@ void processUserMessage(const char *message,ClientWindow *main)
 
     time(&timestamp);
     timeinfo = localtime(&timestamp);
-    strftime(timer,BUFLEN,"<%b %d - %R>",timeinfo);
+    strftime(timer, BUFLEN, "<%b %d - %R>", timeinfo);
     sprintf(temp, "%s %s - %s: %s", timer, localip, cltInfo.username, message);
     std::string msg(temp);
 
@@ -356,7 +356,8 @@ void updateHistory(std::string message)
 void receiveMessage(ClientWindow *main)
 {
     char msg[BUFLEN];
-    while (true){
+    while (true)
+    {
         getMsg(cltInfo.cltSock, msg, BUFLEN);
         string histMsg(msg);
         main->updateDisplay(histMsg.c_str());
@@ -381,10 +382,10 @@ void receiveMessage(ClientWindow *main)
  *******************************************************/
 void saveSession(QWidget * main)
 {
-   QString filename = QFileDialog::getSaveFileName(main, "Save File", "/home", "Text Files (*.txt)");
-   QFile handle(filename);
-   if (handle.open(QIODevice::ReadWrite))
-   {
+    QString filename = QFileDialog::getSaveFileName(main, "Save File", "/home", "Text Files (*.txt)");
+    QFile handle(filename);
+    if (handle.open(QIODevice::ReadWrite))
+    {
         QTextStream out(&handle);
         for (auto& msg : chatHistory)
         {
@@ -392,7 +393,7 @@ void saveSession(QWidget * main)
             out << temp << endl;
         }
         handle.close();
-   }
+    }
 
 }
 
