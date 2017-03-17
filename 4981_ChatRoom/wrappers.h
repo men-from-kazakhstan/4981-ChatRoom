@@ -8,5 +8,6 @@
 #include <errno.h>
 
 int sendMsg(int sockfd, const char *msg, size_t msgSize);
+int getMsg(int sockfd, char *msg, size_t msgSize);
 
 #endif // WRAPPERS_H

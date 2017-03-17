@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 #include <stdio.h>
 #include <netdb.h>
 #include <unistd.h>
@@ -35,12 +36,13 @@ int setupClientSocket(QWidget *parent);
 bool validUsername(char *username, QWidget *parent);
 bool validClientPort(char *port, QWidget *parent);
 bool validIP(char *ip, QWidget *parent);
-
 void concatUsername(char *username);
 void concatPort(char *port);
 void concatIP(char *ip);
-void getUserMessage(ClientWindow *cw, char *completeMsg, char *IP, char *username);
-void formatMessage(const char *message, const char *IP, const char *username, char* dest);
-void sendToServer(char *msg, size_t msglen);
+void processUserMessage(const char *message, ClientWindow *main);
+void updateHistory(std::string message);
+void receiveMessage(ClientWindow *main);
+void saveSession(QWidget * main);
+void sendToServer(const char *msg, size_t msglen);
 
 #endif // CLIENT_H
