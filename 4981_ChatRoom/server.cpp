@@ -18,7 +18,7 @@ int srv_socket;
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 0 on success and -1 on failure
+ *  Return:        return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -34,9 +34,9 @@ int srv_socket;
 int setupServerSocket(QWidget* parent)
 {
     // create the TCP socket and error check
-    if((createServerSocket(parent)) < 0)
+    if (!createServerSocket(parent))
     {
-        return -1;
+        return 0;
     }
     else
     {
@@ -44,9 +44,9 @@ int setupServerSocket(QWidget* parent)
     }
 
     // set socket option to reuse the address and error check
-    if(setSocketOptions(parent) < 0)
+    if (!setSocketOptions(parent))
     {
-        return -1;
+        return 0;
     }
     else
     {
@@ -54,9 +54,9 @@ int setupServerSocket(QWidget* parent)
     }
 
     // bind the socket and error check
-    if(bindSocket(parent) < 0)
+    if (!bindSocket(parent))
     {
-        return -1;
+        return 0;
     }
     else
     {
@@ -64,9 +64,9 @@ int setupServerSocket(QWidget* parent)
     }
 
     // start listening to the socket and error check
-    if(listenSocket(parent) < 0)
+    if (!listenSocket(parent))
     {
-        return -1;
+        return 0;
     }
     else
     {
@@ -76,7 +76,7 @@ int setupServerSocket(QWidget* parent)
     // go to monitor connections function
     monitorConnections(parent);
 
-    return 0;
+    return 1;
 }
 
 
@@ -85,7 +85,7 @@ int setupServerSocket(QWidget* parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 0 on success and -1 on failure
+ *  Return:        return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -99,13 +99,13 @@ int setupServerSocket(QWidget* parent)
 int createServerSocket(QWidget* parent)
 {
     // create the TCP socket and error check
-    if((srv_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if ((srv_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         QMessageBox::information(parent, "Error",  strerror(errno));
-        return -1;
+        return 0;
     }
 
-    return 0;
+    return 1;
 }
 
 
@@ -114,7 +114,7 @@ int createServerSocket(QWidget* parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 0 on success and -1 on failure
+ *  Return:        return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -131,13 +131,13 @@ int setSocketOptions(QWidget *parent)
     int arg = 1;
 
     // set socket option to reuse the address and error check
-    if(setsockopt(srv_socket, SOL_SOCKET, SO_REUSEADDR, &arg, sizeof(arg)) < 0)
+    if (setsockopt(srv_socket, SOL_SOCKET, SO_REUSEADDR, &arg, sizeof(arg)) < 0)
     {
         QMessageBox::information(parent, "Error",  strerror(errno));
-        return -1;
+        return 0;
     }
 
-    return 0;
+    return 1;
 }
 
 
@@ -146,7 +146,7 @@ int setSocketOptions(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 0 on success and -1 on failure
+ *  Return:        return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -164,13 +164,13 @@ int bindSocket(QWidget *parent)
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY); // use any address trying to connect
 
     // bind the socket and error check
-    if(bind(srv_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+    if (bind(srv_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
     {
         QMessageBox::information(parent, "Error", strerror(errno));
-        return -1;
+        return 0;
     }
 
-    return 0;
+    return 1;
 }
 
 
@@ -179,7 +179,7 @@ int bindSocket(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 0 on success and -1 on failure
+ *  Return:        return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -194,13 +194,13 @@ int bindSocket(QWidget *parent)
 int listenSocket(QWidget *parent)
 {
     // start listening to the socket and error check
-    if(listen(srv_socket, LISTENQ) < 0)
+    if (listen(srv_socket, LISTENQ) < 0)
     {
         QMessageBox::information(parent, "Error", strerror(errno));
-        return -1;
+        return 0;
     }
 
-    return 0;
+    return 1;
 }
 
 /********************************************************
@@ -208,7 +208,7 @@ int listenSocket(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 0 on success and -1 on failure
+ *  Return:        return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -253,7 +253,7 @@ int monitorConnections(QWidget* parent)
             if((new_sd = accept(srv_socket, (struct sockaddr *)&client_addr, &client_len)) < 0)
             {
                 QMessageBox::information(parent, "Error",  strerror(errno));
-                return -1;
+                return 0;
             }
             else
             {
@@ -291,7 +291,7 @@ int monitorConnections(QWidget* parent)
         }
         checkClients(maxi, &rset, client, &allset);
     }
-    return 0;
+    return 1;
 }
 
 
@@ -317,7 +317,7 @@ bool validServerPort(char *port, QWidget *parent)
     int tmpPort;
 
     // check if nothing was entered and display error if so
-    if(strlen(port) == 0)
+    if (strlen(port) == 0)
     {
         QMessageBox::information(parent, "Error", "Error: You must enter a port number");
         return false;

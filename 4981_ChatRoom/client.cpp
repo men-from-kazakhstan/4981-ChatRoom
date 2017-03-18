@@ -25,24 +25,26 @@ char localip[BUFLEN];
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:         return 0 on success and -1 on failure
+ *  Return:         return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
  *  Created:        Mar 13 2017
  *
- *  Modified:       Mar 17 2017 Refactoring code ~ Alex
+ *  Modified:
+ *                  Mar 16 2017 Pereparing local IP ~ Matt
+ *                  Mar 17 2017 Refactoring code ~ Alex
  *
  *  Desc:
  *      Responsible for socket creation. Calls wrapper functions
- *      top create and connect the socket.
+ *      to create and connect the socket.
  *******************************************************/
 int setupClientSocket(QWidget *parent)
 {
     // create TCP socket and error check
-    if(createClientSocket(parent) < 0)
+    if (!createClientSocket(parent))
     {
-        return -1;
+        return 0;
     }
     else
     {
@@ -50,16 +52,16 @@ int setupClientSocket(QWidget *parent)
     }
 
     // connect to server and error check
-    if(connectSocket(parent) < 0)
+    if (!connectSocket(parent))
     {
-        return -1;
+        return 0;
     }
     else
     {
         printf("%s\n", "Client: Connected to Server");
     }
 
-    return 0;
+    return 1;
 }
 
 
@@ -68,11 +70,11 @@ int setupClientSocket(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:         return 0 on success and -1 on failure
+ *  Return:         return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
- *  Created:        Mar 13 2017
+ *  Created:        Mar 17 2017
  *
  *  Desc:
  *      Responsible for creating a socket
@@ -80,13 +82,13 @@ int setupClientSocket(QWidget *parent)
 int createClientSocket(QWidget *parent)
 {
     // create TCP socket and error check
-    if((cltInfo.cltSock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if ((cltInfo.cltSock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         QMessageBox::information(parent, "Error",  strerror(errno));
-        return -1;
+        return 0;
     }
 
-    return 0;
+    return 1;
 }
 
 
@@ -95,7 +97,7 @@ int createClientSocket(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:         return 0 on success and -1 on failure
+ *  Return:         return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski , Matt Goerwell
  *
@@ -111,10 +113,10 @@ int connectSocket(QWidget *parent)
     cltInfo.cltAddr.sin_family = AF_INET;
 
     // connect to server and error check
-    if(connect(cltInfo.cltSock, (struct sockaddr *)&cltInfo.cltAddr, sizeof(cltInfo.cltAddr)) < 0)
+    if (connect(cltInfo.cltSock, (struct sockaddr *)&cltInfo.cltAddr, sizeof(cltInfo.cltAddr)) < 0)
     {
         QMessageBox::information(parent, "Error",  strerror(errno));
-        return -1;
+        return 0;
     }
 
     //setting up local ip;
@@ -123,7 +125,7 @@ int connectSocket(QWidget *parent)
     getsockname(cltInfo.cltSock, (struct sockaddr*)&local, &addressLength);
     sprintf(localip, "%s", inet_ntoa(local.sin_addr));
 
-    return 0;
+    return 1;
 }
 
 
@@ -150,14 +152,14 @@ int connectSocket(QWidget *parent)
 bool validUsername(char *username, QWidget *parent)
 {
     // check if nothing was entered and display error if so
-    if(strlen(username) == 0) // empty
+    if (strlen(username) == 0) // empty
     {
       QMessageBox::information(parent, "Error", "Error: You must enter a username");
       return false;
     }
 
     // check if between 4 and 16
-    if(strlen(username) > 16 || strlen(username) < 4)
+    if (strlen(username) > 16 || strlen(username) < 4)
     {
         QMessageBox::information(parent, "Error", "Error: Username must be between \n4 - 16 characters long");
         return false;
@@ -203,7 +205,7 @@ bool validClientPort(char *port, QWidget *parent)
     int tmpPort;
 
     // check if nothing was entered and display error if so
-    if(strlen(port) == 0)
+    if (strlen(port) == 0)
     {
         QMessageBox::information(parent, "Error", "Error: You must enter a port number");
         return false;
@@ -238,7 +240,7 @@ bool validIP(char *ip, QWidget *parent)
     struct hostent *hp;
 
     // check for a valid IP
-    if((hp = gethostbyname(ip)) == NULL)
+    if ((hp = gethostbyname(ip)) == NULL)
     {
         switch(h_errno)
         {
