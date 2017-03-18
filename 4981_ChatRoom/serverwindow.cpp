@@ -38,7 +38,7 @@ void ServerWindow::on_srvStartStopButton_clicked()
     sprintf(cPort, ui->srvPortEdit->text().toStdString().c_str());
 
     // check for valid port
-    if(!validServerPort(cPort, this))
+    if (!validServerPort(cPort, this))
     {
 
         ui->srvPortEdit->clear(); // clear the username edit text

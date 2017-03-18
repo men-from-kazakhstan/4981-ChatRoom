@@ -51,7 +51,7 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ui->cltConfigDisplay->append(ipDisplay);
 
     // setup to the clients TCP socket
-    if (setupClientSocket(this) != -1)
+    if (setupClientSocket(this))
     {
         //If we can connect properly, start our receiving thread ~Matt
         std::thread reading(receiveMessage, this);
