@@ -32,6 +32,8 @@ struct ClientInfo{
 };
 
 int setupClientSocket(QWidget *parent);
+int createClientSocket(QWidget *parent);
+int connectSocket(QWidget *parent);
 
 bool validUsername(char *username, QWidget *parent);
 bool validClientPort(char *port, QWidget *parent);

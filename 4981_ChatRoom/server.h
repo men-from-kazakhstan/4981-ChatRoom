@@ -21,6 +21,10 @@
 
 int setupServerSocket(QWidget* parent);
 int monitorConnections(QWidget* parent);
+int createServerSocket(QWidget *parent);
+int setSocketOptions(QWidget *parent);
+int bindSocket(QWidget *parent);
+int listenSocket(QWidget *parent);
 
 //------- make function take in a char* instead of QString
 bool validServerPort(char *port, QWidget *parent);

@@ -25,25 +25,23 @@ char localip[BUFLEN];
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 0 on success and -1 on failure
+ *  Return:         return 0 on success and -1 on failure
  *
  *  Programmer:     Alex Zielinski
  *
  *  Created:        Mar 13 2017
  *
- *  Modified:       Mar 16 2017 Pereparing local IP ~ Matt
+ *  Modified:       Mar 17 2017 Refactoring code ~ Alex
  *
  *  Desc:
- *      Responsible for socket creation. It creates the socket and
- *      attempts to connect to the server. It also stores the local
- *      IP address for later use.
+ *      Responsible for socket creation. Calls wrapper functions
+ *      top create and connect the socket.
  *******************************************************/
 int setupClientSocket(QWidget *parent)
 {
     // create TCP socket and error check
-    if((cltInfo.cltSock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if(createClientSocket(parent) < 0)
     {
-        QMessageBox::information(parent, "Error", "Failure to create socket");
         return -1;
     }
     else
@@ -51,19 +49,74 @@ int setupClientSocket(QWidget *parent)
         printf("%s\n", "Client: Socket Created");
     }
 
-    // set to user IPv4
-    cltInfo.cltAddr.sin_family = AF_INET;
-
     // connect to server and error check
-    if(connect(cltInfo.cltSock, (struct sockaddr *)&cltInfo.cltAddr, sizeof(cltInfo.cltAddr)) < 0)
+    if(connectSocket(parent) < 0)
     {
-        QMessageBox::information(parent, "Error", "Failure to connect to server");
         return -1;
     }
     else
     {
         printf("%s\n", "Client: Connected to Server");
     }
+
+    return 0;
+}
+
+
+/********************************************************
+ *  Function:       int createClientSocket(QWidget *parent)
+ *
+ *                      QWidget *parent  -  the current window in use
+ *
+ *  Return:         return 0 on success and -1 on failure
+ *
+ *  Programmer:     Alex Zielinski
+ *
+ *  Created:        Mar 13 2017
+ *
+ *  Desc:
+ *      Responsible for creating a socket
+ *******************************************************/
+int createClientSocket(QWidget *parent)
+{
+    // create TCP socket and error check
+    if((cltInfo.cltSock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        QMessageBox::information(parent, "Error",  strerror(errno));
+        return -1;
+    }
+
+    return 0;
+}
+
+
+/********************************************************
+ *  Function:       int createSocket(QWidget *parent)
+ *
+ *                      QWidget *parent  -  the current window in use
+ *
+ *  Return:         return 0 on success and -1 on failure
+ *
+ *  Programmer:     Alex Zielinski , Matt Goerwell
+ *
+ *  Created:        Mar 17 2017
+ *
+ *  Desc:
+ *      Responsible for connecting socket to server. Also
+ *      Stores the local IP address for later use.
+ *******************************************************/
+int connectSocket(QWidget *parent)
+{
+    // set to user IPv4
+    cltInfo.cltAddr.sin_family = AF_INET;
+
+    // connect to server and error check
+    if(connect(cltInfo.cltSock, (struct sockaddr *)&cltInfo.cltAddr, sizeof(cltInfo.cltAddr)) < 0)
+    {
+        QMessageBox::information(parent, "Error",  strerror(errno));
+        return -1;
+    }
+
     //setting up local ip;
     struct sockaddr_in local;
     socklen_t addressLength = sizeof(local);
