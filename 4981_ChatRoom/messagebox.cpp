@@ -7,7 +7,8 @@
 #include "clientwindow.h"
 #include "client.h"
 
-MessageBox::MessageBox(QWidget *parent) : QTextEdit(parent) {
+MessageBox::MessageBox(QWidget *parent) : QTextEdit(parent)
+{
     setPlaceholderText("Type Your Message Here!");
 }
 
