@@ -84,6 +84,18 @@ void ConfigDialog::on_cnfgOkButton_clicked()
     }
 }
 
+/********************************************************
+ *  Function:       void ConfigDialog::configMap()
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Sets up a map containing all the colours in the GUI
+ *******************************************************/
 void ConfigDialog::configMap()
 {
     QList<QRadioButton *> allButtons = ui->groupBox->findChildren<QRadioButton *>();
@@ -95,10 +107,37 @@ void ConfigDialog::configMap()
 
 }
 
+/********************************************************
+ *  Function:       string ConfigDialog::getColour()
+ *
+ *  Return:         String of the colour name
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Gets the user-selected colour
+ *******************************************************/
 string ConfigDialog::getColour() {
     return colour;
 }
 
+/********************************************************
+ *  Function:       void ConfigDialog::setColour()
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Goes through all radio buttons and sets the colour
+ *      to whichever one is selected
+ *******************************************************/
 void ConfigDialog::setColour()
 {
     QButtonGroup group;

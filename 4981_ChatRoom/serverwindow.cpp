@@ -49,7 +49,19 @@ void ServerWindow::on_srvStartStopButton_clicked()
     }
 }
 
-/* Add a new client to the server window */
+/********************************************************
+ *  Function:       void ServerWindow::updateClients(const char *client)
+ *                      const char *client: Client IP address
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Gets the user-selected colour
+ *******************************************************/
 void ServerWindow::updateClients(const char *client)
 {
     char newClient[CLIENT_SIZE];

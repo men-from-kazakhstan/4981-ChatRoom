@@ -18,7 +18,7 @@ int srv_socket;
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -85,7 +85,7 @@ int setupServerSocket(ServerWindow *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -114,7 +114,7 @@ int createServerSocket(ServerWindow *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -146,7 +146,7 @@ int setSocketOptions(ServerWindow *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -179,7 +179,7 @@ int bindSocket(ServerWindow *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -208,7 +208,7 @@ int listenSocket(ServerWindow *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -239,18 +239,18 @@ int monitorConnections(ServerWindow *parent)
     }
     FD_ZERO(&allset);
     FD_SET(srv_socket, &allset);
-    while(true)
+    while (true)
     {
         rset = allset;
         nready = select(maxfd + 1, &rset, NULL, NULL, NULL);
 
         // check for new client connections
-        if(FD_ISSET(srv_socket, &rset))
+        if (FD_ISSET(srv_socket, &rset))
         {
             client_len = sizeof(client_addr);
 
             // accept a new connection and error check
-            if((new_sd = accept(srv_socket, (struct sockaddr *)&client_addr, &client_len)) < 0)
+            if ((new_sd = accept(srv_socket, (struct sockaddr *)&client_addr, &client_len)) < 0)
             {
                 QMessageBox::information(parent, "Error",  strerror(errno));
                 return 0;
@@ -302,7 +302,7 @@ int monitorConnections(ServerWindow *parent)
  *                      QString port     -  port the validate
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        returns True on success and False on failure
+ *  Return:         Returns True on success and False on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -331,38 +331,6 @@ bool validServerPort(char *port, QWidget *parent)
     serverAddr.sin_port = htons(tmpPort);
     return true;
 }
-
-
-/********************************************************
- *  Function:       monitorSockets(int *clients, int numClients, fd_set *rset)
- *                      int *clients: array of client socket descriptors
- *                      int numClients: total number of clients in the clients array
- *                      fd_set *rset: pointer to the set containing the ready client descriptors
- *
- *  Programmer:     Robert Arendac
- *
- *  Created:        Mar 11 2017
- *
- *  Modified:
- *
- *  Desc:
- *      Will go through each socket and determine if one is ready to send
- *      data to the server.  Once all data is received, it will get ready
- *      to echo the message to the appropriate clients.  Will close sockets
- *      if nothing is read.
- *******************************************************/
-/* Don't think we need this...
-void monitorSockets(int *clients, int numClients, fd_set *rset, fd_set *allset)
-{
-
-    //Make select call
-
-    //check for new connection
-
-    //call checkClients (do this regardless of if a new client has connected or not.
-
-}
-*/
 
 /********************************************************
  *  Function:       checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)

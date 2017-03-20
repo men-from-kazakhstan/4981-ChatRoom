@@ -59,6 +59,9 @@
       <height>71</height>
      </rect>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
    </widget>
    <widget class="QPushButton" name="cltSendButton">
     <property name="geometry">
@@ -71,6 +74,9 @@
     </property>
     <property name="text">
      <string>Send</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="cltSaveButton">
