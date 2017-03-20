@@ -34,7 +34,7 @@ public:
      *      Adds a new client to the end of the client list in the server
      *      window.
      *******************************************************/
-    void updateClients(int client);
+    void updateClients(const char *client);
 
 private slots:
     /********************************************************

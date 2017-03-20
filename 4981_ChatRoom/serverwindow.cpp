@@ -50,9 +50,9 @@ void ServerWindow::on_srvStartStopButton_clicked()
 }
 
 /* Add a new client to the server window */
-void ServerWindow::updateClients(int client)
+void ServerWindow::updateClients(const char *client)
 {
     char newClient[CLIENT_SIZE];
-    sprintf(newClient, "%d", client);
+    sprintf(newClient, "%s", client);
     ui->srvClientList->addItem(newClient);
 }

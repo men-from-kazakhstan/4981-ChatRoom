@@ -31,7 +31,7 @@ int srv_socket;
  *      the socket options to allow reusing the same address, binds
  *      the socket and starts listening to the socket
  *******************************************************/
-int setupServerSocket(QWidget* parent)
+int setupServerSocket(ServerWindow *parent)
 {
     // create the TCP socket and error check
     if (!createServerSocket(parent))
@@ -96,7 +96,7 @@ int setupServerSocket(QWidget* parent)
  *  Desc:
  *      Responsible for creating a socket
  *******************************************************/
-int createServerSocket(QWidget* parent)
+int createServerSocket(ServerWindow *parent)
 {
     // create the TCP socket and error check
     if ((srv_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -126,7 +126,7 @@ int createServerSocket(QWidget* parent)
  *      Responsible for setting the socket option to reuse
  *      the same address
  *******************************************************/
-int setSocketOptions(QWidget *parent)
+int setSocketOptions(ServerWindow *parent)
 {
     int arg = 1;
 
@@ -157,7 +157,7 @@ int setSocketOptions(QWidget *parent)
  *  Desc:
  *      Responsible for binding the socket
  *******************************************************/
-int bindSocket(QWidget *parent)
+int bindSocket(ServerWindow *parent)
 {
     // set family to IPv4
     serverAddr.sin_family = AF_INET;
@@ -191,7 +191,7 @@ int bindSocket(QWidget *parent)
  *      Responsible for setting the socket to listen for
  *      new connections
  *******************************************************/
-int listenSocket(QWidget *parent)
+int listenSocket(ServerWindow *parent)
 {
     // start listening to the socket and error check
     if (listen(srv_socket, LISTENQ) < 0)
@@ -222,7 +222,7 @@ int listenSocket(QWidget *parent)
  *      Responsible for monitoring all the clients that
  *      connect to the server via the select() call
  *******************************************************/
-int monitorConnections(QWidget* parent)
+int monitorConnections(ServerWindow *parent)
 {
     struct sockaddr_in client_addr;
     int nready, maxfd, maxi, new_sd, client[FD_SETSIZE];
@@ -258,6 +258,7 @@ int monitorConnections(QWidget* parent)
             else
             {
                 printf("%s\n", "\tServer: Client accepted");
+                parent->updateClients(inet_ntoa(client_addr.sin_addr));
             }
 
             printf(" Remote Address:  %s\n", inet_ntoa(client_addr.sin_addr));

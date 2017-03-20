@@ -4,8 +4,10 @@
  ***************************************************************/
 
 #include "client.h"
+#include "configdialog.h"
 #include <iostream>
 #include <time.h>
+#include <string>
 #include <QFileDialog>
 #include <QString>
 #include <QTextStream>
@@ -360,14 +362,17 @@ void processUserMessage(const char *message, ClientWindow *main)
 {
     char temp[BUFLEN];
     char timer[BUFLEN];
+    const char *colour = ConfigDialog::getColour().c_str();
+
 
     time_t timestamp;
     struct tm * timeinfo;
 
     time(&timestamp);
     timeinfo = localtime(&timestamp);
-    strftime(timer, BUFLEN, "<%b %d - %R>", timeinfo);
-    sprintf(temp, "%s %s - %s: %s", timer, localip, cltInfo.username, message);
+    strftime(timer, BUFLEN, "[%b %d - %R]", timeinfo);
+    sprintf(temp, "<font color='%s'>%s %s - %s</font>:<br> %s", colour, timer,
+            localip, cltInfo.username, message);
     std::string msg(temp);
 
     main->updateDisplay(msg.c_str());
