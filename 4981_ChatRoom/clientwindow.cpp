@@ -25,7 +25,20 @@
 #include <QMessageBox>
 #include <thread>
 
-/* constructor */
+/********************************************************
+ *  Constructor: ClientWindow
+ *
+ *  Programmer:  Alex Zielinski, Robert Arendac, Matt Goerwell
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Sets up a Dialog box to get user settings, connects
+ *      the chat box signal to the send button slot, and
+ *      creates a detached thread for reading messages.
+ *******************************************************/
 ClientWindow::ClientWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ClientWindow)
@@ -50,6 +63,8 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ui->cltConfigDisplay->append(portDisplay);
     ui->cltConfigDisplay->append(ipDisplay);
 
+    connect(ui->cltChatEdit, SIGNAL(sendUserMessage()), this, SLOT(on_cltSendButton_clicked()), Qt::UniqueConnection);
+
     // setup to the clients TCP socket
     if (setupClientSocket(this))
     {
@@ -66,11 +81,11 @@ ClientWindow::~ClientWindow()
 }
 
 /********************************************************
- *  Function:   on_cltSendButton_clicked()
+ *  Function:    on_cltSendButton_clicked()
  *
- *  Programmer: Alex Zielinski
+ *  Programmer:  Alex Zielinski
  *
- *  Created: Mar 11 2017
+ *  Created:     Mar 11 2017
  *
  *  Modified:
  *
@@ -85,6 +100,7 @@ void ClientWindow::on_cltSendButton_clicked()
     char message[BUFLEN];
     getUIMessage(message);
     processUserMessage(message, this);
+    ui->cltChatEdit->clear();
 }
 
 /********************************************************
