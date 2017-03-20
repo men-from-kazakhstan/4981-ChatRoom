@@ -14,17 +14,18 @@
 #include <unistd.h>
 #include <QMessageBox>
 #include <errno.h>
+#include "serverwindow.h"
 
 #define INPUTBUFF 32
 #define LISTENQ 5   // Queue for the listen call
 #define BUFLEN 512  // Maximum size of a message
 
-int setupServerSocket(QWidget* parent);
-int monitorConnections(QWidget* parent);
-int createServerSocket(QWidget *parent);
-int setSocketOptions(QWidget *parent);
-int bindSocket(QWidget *parent);
-int listenSocket(QWidget *parent);
+int setupServerSocket(ServerWindow *parent);
+int monitorConnections(ServerWindow* parent);
+int createServerSocket(ServerWindow *parent);
+int setSocketOptions(ServerWindow *parent);
+int bindSocket(ServerWindow *parent);
+int listenSocket(ServerWindow *parent);
 
 //------- make function take in a char* instead of QString
 bool validServerPort(char *port, QWidget *parent);

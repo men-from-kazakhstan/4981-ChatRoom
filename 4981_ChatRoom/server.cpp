@@ -18,7 +18,7 @@ int srv_socket;
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -31,7 +31,7 @@ int srv_socket;
  *      the socket options to allow reusing the same address, binds
  *      the socket and starts listening to the socket
  *******************************************************/
-int setupServerSocket(QWidget* parent)
+int setupServerSocket(ServerWindow *parent)
 {
     // create the TCP socket and error check
     if (!createServerSocket(parent))
@@ -85,7 +85,7 @@ int setupServerSocket(QWidget* parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -96,7 +96,7 @@ int setupServerSocket(QWidget* parent)
  *  Desc:
  *      Responsible for creating a socket
  *******************************************************/
-int createServerSocket(QWidget* parent)
+int createServerSocket(ServerWindow *parent)
 {
     // create the TCP socket and error check
     if ((srv_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -114,7 +114,7 @@ int createServerSocket(QWidget* parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -126,7 +126,7 @@ int createServerSocket(QWidget* parent)
  *      Responsible for setting the socket option to reuse
  *      the same address
  *******************************************************/
-int setSocketOptions(QWidget *parent)
+int setSocketOptions(ServerWindow *parent)
 {
     int arg = 1;
 
@@ -146,7 +146,7 @@ int setSocketOptions(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -157,7 +157,7 @@ int setSocketOptions(QWidget *parent)
  *  Desc:
  *      Responsible for binding the socket
  *******************************************************/
-int bindSocket(QWidget *parent)
+int bindSocket(ServerWindow *parent)
 {
     // set family to IPv4
     serverAddr.sin_family = AF_INET;
@@ -179,7 +179,7 @@ int bindSocket(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -191,7 +191,7 @@ int bindSocket(QWidget *parent)
  *      Responsible for setting the socket to listen for
  *      new connections
  *******************************************************/
-int listenSocket(QWidget *parent)
+int listenSocket(ServerWindow *parent)
 {
     // start listening to the socket and error check
     if (listen(srv_socket, LISTENQ) < 0)
@@ -208,7 +208,7 @@ int listenSocket(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        return 1 on success and 0 on failure
+ *  Return:         Return 1 on success and 0 on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -222,7 +222,7 @@ int listenSocket(QWidget *parent)
  *      Responsible for monitoring all the clients that
  *      connect to the server via the select() call
  *******************************************************/
-int monitorConnections(QWidget* parent)
+int monitorConnections(ServerWindow *parent)
 {
     struct sockaddr_in client_addr;
     int nready, maxfd, maxi, new_sd, client[FD_SETSIZE];
@@ -239,18 +239,18 @@ int monitorConnections(QWidget* parent)
     }
     FD_ZERO(&allset);
     FD_SET(srv_socket, &allset);
-    while(true)
+    while (true)
     {
         rset = allset;
         nready = select(maxfd + 1, &rset, NULL, NULL, NULL);
 
         // check for new client connections
-        if(FD_ISSET(srv_socket, &rset))
+        if (FD_ISSET(srv_socket, &rset))
         {
             client_len = sizeof(client_addr);
 
             // accept a new connection and error check
-            if((new_sd = accept(srv_socket, (struct sockaddr *)&client_addr, &client_len)) < 0)
+            if ((new_sd = accept(srv_socket, (struct sockaddr *)&client_addr, &client_len)) < 0)
             {
                 QMessageBox::information(parent, "Error",  strerror(errno));
                 return 0;
@@ -258,6 +258,7 @@ int monitorConnections(QWidget* parent)
             else
             {
                 printf("%s\n", "\tServer: Client accepted");
+                parent->updateClients(inet_ntoa(client_addr.sin_addr));
             }
 
             printf(" Remote Address:  %s\n", inet_ntoa(client_addr.sin_addr));
@@ -301,7 +302,7 @@ int monitorConnections(QWidget* parent)
  *                      QString port     -  port the validate
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:        returns True on success and False on failure
+ *  Return:         Returns True on success and False on failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -330,38 +331,6 @@ bool validServerPort(char *port, QWidget *parent)
     serverAddr.sin_port = htons(tmpPort);
     return true;
 }
-
-
-/********************************************************
- *  Function:       monitorSockets(int *clients, int numClients, fd_set *rset)
- *                      int *clients: array of client socket descriptors
- *                      int numClients: total number of clients in the clients array
- *                      fd_set *rset: pointer to the set containing the ready client descriptors
- *
- *  Programmer:     Robert Arendac
- *
- *  Created:        Mar 11 2017
- *
- *  Modified:
- *
- *  Desc:
- *      Will go through each socket and determine if one is ready to send
- *      data to the server.  Once all data is received, it will get ready
- *      to echo the message to the appropriate clients.  Will close sockets
- *      if nothing is read.
- *******************************************************/
-/* Don't think we need this...
-void monitorSockets(int *clients, int numClients, fd_set *rset, fd_set *allset)
-{
-
-    //Make select call
-
-    //check for new connection
-
-    //call checkClients (do this regardless of if a new client has connected or not.
-
-}
-*/
 
 /********************************************************
  *  Function:       checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)

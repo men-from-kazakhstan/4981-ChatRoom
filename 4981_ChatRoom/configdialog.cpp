@@ -10,14 +10,20 @@
 #include "configdialog.h"
 #include "ui_configdialog.h"
 #include "client.h"
+using namespace std;
+
+string ConfigDialog::colour = "\e[0;34m";
 
 /* constructor */
 ConfigDialog::ConfigDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ConfigDialog)
 {
+
     char tmpUsername[INPUTBUFF];
     ui->setupUi(this); // display configuration dialog
+
+    configMap();
 
     // set the port edit text to only take ints
     ui->cnfgPortEdit->setValidator(new QIntValidator);
@@ -50,29 +56,97 @@ void ConfigDialog::on_cnfgOkButton_clicked()
     sprintf(cIP, ui->cnfgServerIPEdit->text().toStdString().c_str());
 
     // check for valid username
-    if(!validUsername(cUsername, this))
+    if (!validUsername(cUsername, this))
     {
         ui->cnfgUsernameEdit->clear(); // clear the username edit text
         validFlag = 0;
     }
 
     // check for valid port
-    if(!validClientPort(cPort, this))
+    if (!validClientPort(cPort, this))
     {
         ui->cnfgPortEdit->clear(); // clear the username edit text
         validFlag = 0;
     }
 
     // check for valid IP
-    if(!validIP(cIP, this))
+    if (!validIP(cIP, this))
     {
         ui->cnfgServerIPEdit->clear(); // clear the username edit text
         validFlag = 0;
     }
 
     // check if any of the field were invalid
-    if(validFlag)
+    if (validFlag)
     {
+        setColour();
         this->close(); // close the current window
     }
+}
+
+/********************************************************
+ *  Function:       void ConfigDialog::configMap()
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Sets up a map containing all the colours in the GUI
+ *******************************************************/
+void ConfigDialog::configMap()
+{
+    QList<QRadioButton *> allButtons = ui->groupBox->findChildren<QRadioButton *>();
+
+    for (int i = 0; i < allButtons.size(); i++)
+    {
+        colourCodes.insert(pair<int, string>(i, allButtons[i]->text().toStdString()));
+    }
+
+}
+
+/********************************************************
+ *  Function:       string ConfigDialog::getColour()
+ *
+ *  Return:         String of the colour name
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Gets the user-selected colour
+ *******************************************************/
+string ConfigDialog::getColour() {
+    return colour;
+}
+
+/********************************************************
+ *  Function:       void ConfigDialog::setColour()
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Goes through all radio buttons and sets the colour
+ *      to whichever one is selected
+ *******************************************************/
+void ConfigDialog::setColour()
+{
+    QButtonGroup group;
+    QList<QRadioButton *> allButtons = ui->groupBox->findChildren<QRadioButton *>();
+
+    for (int i = 0; i < allButtons.size(); i++)
+    {
+        group.addButton(allButtons[i], i);
+    }
+
+    colour = colourCodes.find(group.checkedId())->second;
 }

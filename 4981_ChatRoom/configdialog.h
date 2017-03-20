@@ -4,6 +4,8 @@
 #define CONFIGDIALOG_H
 
 #include <QDialog>
+#include <string>
+#include <map>
 
 #define DEFAULTPORT 8000
 
@@ -19,6 +21,9 @@ public:
     /* Qt created functions */
     explicit ConfigDialog(QWidget *parent = 0); // constructor
     ~ConfigDialog(); // destructor
+
+    static std::string getColour();
+    void setColour();
 
 private slots:
     /********************************************************
@@ -45,6 +50,9 @@ private slots:
 
 private:
     Ui::ConfigDialog *ui;
+    static std::string colour;
+    std::map<int, std::string> colourCodes;
+    void configMap();
 };
 
 #endif // CONFIGDIALOG_H
