@@ -56,3 +56,31 @@ int getMsg(int sockfd, char *msg, size_t msgSize)
     }
     return bytesRead;
 }
+
+/********************************************************
+ *  Function:       int createSocket(QMainWindow *parent, int *sck)
+ *                      QWidget *parent  -  the current window in use
+ *                      int *sck  -  location where socket will be saved to
+ *
+ *  Return:         Return 1 on success and 0 on failure
+ *
+ *  Programmer:     Alex Zielinski
+ *
+ *  Created:        Mar 17 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Responsible for creating a socket
+ *******************************************************/
+int createSocket(QMainWindow *parent, int *sck)
+{
+    // create the TCP socket and error check
+    if ((*sck = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        QMessageBox::information(parent, "Error",  strerror(errno));
+        return 0;
+    }
+
+    return 1;
+}
