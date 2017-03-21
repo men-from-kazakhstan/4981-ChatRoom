@@ -5,6 +5,7 @@
 
 #include "client.h"
 #include "configdialog.h"
+#include "wrappers.h"
 #include <iostream>
 #include <time.h>
 #include <string>
@@ -41,10 +42,10 @@ char localip[BUFLEN];
  *      Responsible for socket creation. Calls wrapper functions
  *      to create and connect the socket.
  *******************************************************/
-int setupClientSocket(QWidget *parent)
+int setupClientSocket(ClientWindow *parent)
 {
     // create TCP socket and error check
-    if (!createClientSocket(parent))
+    if (!createSocket(parent, &cltInfo.cltSock))
     {
         return 0;
     }
@@ -66,36 +67,8 @@ int setupClientSocket(QWidget *parent)
     return 1;
 }
 
-
 /********************************************************
- *  Function:       int createClientSocket(QWidget *parent)
- *
- *                      QWidget *parent  -  the current window in use
- *
- *  Return:         return 1 on success and 0 on failure
- *
- *  Programmer:     Alex Zielinski
- *
- *  Created:        Mar 17 2017
- *
- *  Desc:
- *      Responsible for creating a socket
- *******************************************************/
-int createClientSocket(QWidget *parent)
-{
-    // create TCP socket and error check
-    if ((cltInfo.cltSock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        QMessageBox::information(parent, "Error",  strerror(errno));
-        return 0;
-    }
-
-    return 1;
-}
-
-
-/********************************************************
- *  Function:       int createSocket(QWidget *parent)
+ *  Function:       int connectSocket(QWidget *parent)
  *
  *                      QWidget *parent  -  the current window in use
  *

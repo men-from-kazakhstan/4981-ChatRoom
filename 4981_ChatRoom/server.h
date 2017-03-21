@@ -22,7 +22,6 @@
 
 int setupServerSocket(ServerWindow *parent);
 int monitorConnections(ServerWindow* parent);
-int createServerSocket(ServerWindow *parent);
 int setSocketOptions(ServerWindow *parent);
 int bindSocket(ServerWindow *parent);
 int listenSocket(ServerWindow *parent);

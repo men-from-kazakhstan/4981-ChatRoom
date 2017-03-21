@@ -4,6 +4,7 @@
 #define CLIENTWINDOW_H
 
 #include <QMainWindow>
+#include "messagebox.h"
 
 namespace Ui {
 class ClientWindow;
