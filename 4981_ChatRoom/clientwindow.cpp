@@ -40,6 +40,13 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ConfigDialog *cd = new ConfigDialog();
     cd->exec();
 
+    // setup to the clients TCP socket
+    if(setupClientSocket(this) < 1)
+    {
+        ConfigDialog *cd = new ConfigDialog();
+        cd->exec();
+    }
+
     // concatinate user entered data to display text
     concatUsername(usernameDisplay);
     concatPort(portDisplay);
@@ -50,13 +57,9 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ui->cltConfigDisplay->append(portDisplay);
     ui->cltConfigDisplay->append(ipDisplay);
 
-    // setup to the clients TCP socket
-    if (setupClientSocket(this))
-    {
-        //If we can connect properly, start our receiving thread ~Matt
-        std::thread reading(receiveMessage, this);
-        reading.detach();
-    }
+    //If we can connect properly, start our receiving thread ~Matt
+    std::thread reading(receiveMessage, this);
+    reading.detach();
 }
 
 /* destructor */
