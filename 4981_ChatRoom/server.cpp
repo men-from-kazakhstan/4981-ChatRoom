@@ -34,7 +34,7 @@ int srv_socket;
 int setupServerSocket(ServerWindow *parent)
 {
     // create the TCP socket and error check
-    if (!createServerSocket(parent))
+    if (!createSocket(parent, &srv_socket))
     {
         return 0;
     }
@@ -79,40 +79,10 @@ int setupServerSocket(ServerWindow *parent)
     return 1;
 }
 
-
 /********************************************************
- *  Function:       int createServerSocket(QWidget* parent)
+ *  Function:       int setSocketOptions(ServerWindow *parent)
  *
- *                      QWidget *parent  -  the current window in use
- *
- *  Return:         Return 1 on success and 0 on failure
- *
- *  Programmer:     Alex Zielinski
- *
- *  Created:        Mar 17 2017
- *
- *  Modified:
- *
- *  Desc:
- *      Responsible for creating a socket
- *******************************************************/
-int createServerSocket(ServerWindow *parent)
-{
-    // create the TCP socket and error check
-    if ((srv_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        QMessageBox::information(parent, "Error",  strerror(errno));
-        return 0;
-    }
-
-    return 1;
-}
-
-
-/********************************************************
- *  Function:       int createServerSocket(QWidget* parent)
- *
- *                      QWidget *parent  -  the current window in use
+ *                      ServerWindow *parent  -  the current window in use
  *
  *  Return:         Return 1 on success and 0 on failure
  *
@@ -142,9 +112,9 @@ int setSocketOptions(ServerWindow *parent)
 
 
 /********************************************************
- *  Function:       int createServerSocket(QWidget* parent)
+ *  Function:       int bindSocket(ServerWindow *parent)
  *
- *                      QWidget *parent  -  the current window in use
+ *                      ServerWindow *parent  -  the current window in use
  *
  *  Return:         Return 1 on success and 0 on failure
  *
@@ -175,9 +145,9 @@ int bindSocket(ServerWindow *parent)
 
 
 /********************************************************
- *  Function:       int createServerSocket(QWidget* parent)
+ *  Function:       int listenSocket(ServerWindow *parent)
  *
- *                      QWidget *parent  -  the current window in use
+ *                      ServerWindow *parent  -  the current window in use
  *
  *  Return:         Return 1 on success and 0 on failure
  *

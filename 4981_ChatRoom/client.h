@@ -25,14 +25,14 @@
 #define INPUTBUFF 32
 
 /* struct that contains all client info */
-struct ClientInfo{
+struct ClientInfo
+{
     struct sockaddr_in cltAddr;
     int cltSock;
     char username[INPUTBUFF];
 };
 
-int setupClientSocket(QWidget *parent);
-int createClientSocket(QWidget *parent);
+int setupClientSocket(ClientWindow *parent);
 int connectSocket(QWidget *parent);
 
 bool validUsername(char *username, QWidget *parent);
