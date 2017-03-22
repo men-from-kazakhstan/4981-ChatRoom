@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Info</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="clientButton">
@@ -60,7 +60,7 @@
      <x>0</x>
      <y>0</y>
      <width>240</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
