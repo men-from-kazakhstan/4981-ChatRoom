@@ -7,13 +7,13 @@
 #include "serverwindow.h"
 #include "wrappers.h"
 #include "thread"
+#include <map>
 
 #include <QMessageBox>
 
 struct sockaddr_in serverAddr;
-struct sockaddr_in client_addr; // moved this from function monitor connections
 int srv_socket;
-
+std::map<int, std::string> clientMap;
 
 /********************************************************
  *  Function:       int setupServerSocket(QWidget* parent)
@@ -197,6 +197,7 @@ int listenSocket(ServerWindow *parent)
  *******************************************************/
 int monitorConnections(ServerWindow *parent)
 {
+    struct sockaddr_in client_addr;
     int nready, maxfd, maxi, new_sd, client[FD_SETSIZE];
     socklen_t client_len;
     fd_set rset, allset;
@@ -230,7 +231,9 @@ int monitorConnections(ServerWindow *parent)
             else
             {
                 printf("%s\n", "\tServer: Client accepted");
-                parent->updateClients(inet_ntoa(client_addr.sin_addr));
+                parent->updateClients(inet_ntoa(client_addr.sin_addr)); //update client list on server
+                // add client socket and address to a map
+                clientMap.insert(std::pair<int, std::string>(new_sd, inet_ntoa(client_addr.sin_addr)));
             }
 
             printf(" Remote Address:  %s\n", inet_ntoa(client_addr.sin_addr));
@@ -343,15 +346,17 @@ void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset, Se
             //read message
             bytesRead = getMsg(sockfd, msg, BUFLEN);
 
-            //determine who should get the message
-            determineRecepients(msg,sockfd,numClients,clients);
-
             //close request received
             if (bytesRead == 0)
             {
                 closeSocket(sockfd, allset, clients, i);
-                parent->removeClient(inet_ntoa(client_addr.sin_addr));
+                parent->removeClient(clientMap.find(sockfd)->second.c_str());
+                clientMap.erase(sockfd); // delete client from map
+                continue;
             }
+
+            //determine who should get the message
+            determineRecepients(msg,sockfd,numClients,clients);
         }
     }
 }
