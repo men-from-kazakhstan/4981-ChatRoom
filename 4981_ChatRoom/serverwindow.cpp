@@ -47,8 +47,10 @@ void ServerWindow::on_srvStartStopButton_clicked()
     }
     else
     {
-        setupServerSocket(this);
-        ui->srvStatusLabel->setText("Status: ON");
+        if (setupServerSocket(this) == 1)
+        {
+             ui->srvStatusLabel->setText("Status: ON");
+        }
     }
 }
 
