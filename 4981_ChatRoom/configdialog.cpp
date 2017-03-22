@@ -32,7 +32,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     ui->cnfgPortEdit->setText("7000");
 
     // set username to default value
-    gethostname(tmpUsername, INPUTBUFF); // get system name
+    getlogin_r(tmpUsername, INPUTBUFF); // get system name
     ui->cnfgUsernameEdit->setText(tmpUsername);
 
 }
