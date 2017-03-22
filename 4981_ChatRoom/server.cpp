@@ -413,11 +413,8 @@ void determineRecepients(const char *message, int senderSocket, int numClients, 
  *******************************************************/
 void closeSocket(int sck, fd_set *allset, int *clients, int index)
 {
-    //QMessageBox msgbox;
     char msg[BUFLEN];
     sprintf(msg, "Client %d has disconnected", sck);
-    //msgbox.setText(msg);
-    //msgbox.exec();
 
     close(sck);
     FD_CLR(sck, allset);

@@ -94,13 +94,13 @@ void ServerWindow::removeClient(const char *client)
     sprintf(delClient, "%s", client); // copy char param to buffer
 
     // iterate through the client list
-    for(int row = 0; row < ui->srvClientList->count(); row++)
+    for (int row = 0; row < ui->srvClientList->count(); row++)
     {
         item = ui->srvClientList->item(row); // get current item
         sprintf(itemText, item->text().toStdString().c_str()); // copys the items string content
 
         // if list item is matches the client string the delete
-        if(strcmp(itemText, delClient) == 0)
+        if (strcmp(itemText, delClient) == 0)
         {  // remove current client row from list
            ui->srvClientList->takeItem(row);
         }

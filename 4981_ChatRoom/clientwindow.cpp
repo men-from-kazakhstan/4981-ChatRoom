@@ -54,7 +54,7 @@ ClientWindow::ClientWindow(QWidget *parent) :
     cd->exec();
 
     // setup to the clients TCP socket
-    if(setupClientSocket(this) < 1)
+    if (setupClientSocket(this) < 1)
     {
         ConfigDialog *cd = new ConfigDialog();
         cd->exec();
