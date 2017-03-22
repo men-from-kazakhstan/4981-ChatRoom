@@ -12,7 +12,8 @@
 #include "client.h"
 using namespace std;
 
-string ConfigDialog::colour = "\e[0;34m";
+//string ConfigDialog::colour = "\e[0;34m";
+string ConfigDialog::colour = "black";
 
 /* constructor */
 ConfigDialog::ConfigDialog(QWidget *parent) :
@@ -31,7 +32,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     ui->cnfgPortEdit->setText("7000");
 
     // set username to default value
-    gethostname(tmpUsername, INPUTBUFF); // get system name
+    getlogin_r(tmpUsername, INPUTBUFF); // get system name
     ui->cnfgUsernameEdit->setText(tmpUsername);
 
 }
@@ -65,14 +66,14 @@ void ConfigDialog::on_cnfgOkButton_clicked()
     // check for valid port
     if (!validClientPort(cPort, this))
     {
-        ui->cnfgPortEdit->clear(); // clear the username edit text
+        ui->cnfgPortEdit->clear(); // clear the port edit text
         validFlag = 0;
     }
 
     // check for valid IP
     if (!validIP(cIP, this))
     {
-        ui->cnfgServerIPEdit->clear(); // clear the username edit text
+        ui->cnfgServerIPEdit->clear(); // clear the ip edit text
         validFlag = 0;
     }
 

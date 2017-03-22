@@ -6,10 +6,12 @@
 #include "server.h"
 #include "serverwindow.h"
 #include "wrappers.h"
+#include "thread"
 
 #include <QMessageBox>
 
 struct sockaddr_in serverAddr;
+struct sockaddr_in client_addr; // moved this from function monitor connections
 int srv_socket;
 
 
@@ -74,7 +76,8 @@ int setupServerSocket(ServerWindow *parent)
     }
 
     // go to monitor connections function
-    monitorConnections(parent);
+    std::thread reading(monitorConnections, parent);
+    reading.detach();
 
     return 1;
 }
@@ -194,7 +197,6 @@ int listenSocket(ServerWindow *parent)
  *******************************************************/
 int monitorConnections(ServerWindow *parent)
 {
-    struct sockaddr_in client_addr;
     int nready, maxfd, maxi, new_sd, client[FD_SETSIZE];
     socklen_t client_len;
     fd_set rset, allset;
@@ -260,7 +262,7 @@ int monitorConnections(ServerWindow *parent)
                 continue;	// no more readable descriptors
 
         }
-        checkClients(maxi, &rset, client, &allset);
+        checkClients(maxi, &rset, client, &allset, parent);
     }
     return 1;
 }
@@ -313,14 +315,14 @@ bool validServerPort(char *port, QWidget *parent)
  *
  *  Created:        Mar 12 2017
  *
- *  Modified:
+ *  Modified:       Alex Zielinski ~ March 20 2017
  *
  *  Desc:
  *      This loops through all possible clients in order to determine if they are set. If they are,
  *      it extracts the message written to them, before passing it on to the determine recipients
  *      state. It also handles closing the socket, if that was the client request.
  *******************************************************/
-void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)
+void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset, ServerWindow *parent)
 {
     char msg[BUFLEN];
     int sockfd;
@@ -348,6 +350,7 @@ void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset)
             if (bytesRead == 0)
             {
                 closeSocket(sockfd, allset, clients, i);
+                parent->removeClient(inet_ntoa(client_addr.sin_addr));
             }
         }
     }
@@ -410,11 +413,8 @@ void determineRecepients(const char *message, int senderSocket, int numClients, 
  *******************************************************/
 void closeSocket(int sck, fd_set *allset, int *clients, int index)
 {
-    QMessageBox msgbox;
     char msg[BUFLEN];
     sprintf(msg, "Client %d has disconnected", sck);
-    msgbox.setText(msg);
-    msgbox.exec();
 
     close(sck);
     FD_CLR(sck, allset);

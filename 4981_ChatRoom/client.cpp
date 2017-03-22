@@ -28,7 +28,7 @@ char localip[BUFLEN];
  *
  *                      QWidget *parent  -  the current window in use
  *
- *  Return:         return 1 on success and 0 on failure
+ *  Return:         return 1 on success and 0 on failure, -1 on connection failure
  *
  *  Programmer:     Alex Zielinski
  *
@@ -57,7 +57,8 @@ int setupClientSocket(ClientWindow *parent)
     // connect to server and error check
     if (!connectSocket(parent))
     {
-        return 0;
+        close(cltInfo.cltSock);
+        return -1;
     }
     else
     {

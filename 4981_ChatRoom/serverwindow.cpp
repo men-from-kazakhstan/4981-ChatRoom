@@ -21,6 +21,8 @@ ServerWindow::ServerWindow(QWidget *parent) :
     ui->srvPortEdit->setValidator(new QIntValidator);
     // set port to default value
     ui->srvPortEdit->setText("7000");
+    // set status of server
+    ui->srvStatusLabel->setText("Status: OFF");
 
 }
 
@@ -46,6 +48,7 @@ void ServerWindow::on_srvStartStopButton_clicked()
     else
     {
         setupServerSocket(this);
+        ui->srvStatusLabel->setText("Status: ON");
     }
 }
 
@@ -60,11 +63,46 @@ void ServerWindow::on_srvStartStopButton_clicked()
  *  Modified:
  *
  *  Desc:
- *      Gets the user-selected colour
+ *      Adds a connected client to the servers client list
  *******************************************************/
 void ServerWindow::updateClients(const char *client)
 {
     char newClient[CLIENT_SIZE];
     sprintf(newClient, "%s", client);
     ui->srvClientList->addItem(newClient);
+}
+
+
+/********************************************************
+ *  Function:       void ServerWindow::removeClient(const char *client)
+ *                      const char *client: Client IP address
+ *
+ *  Programmer:     Alex Zielinski
+ *
+ *  Created:        Mar 20 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      removes a client from the servers client list
+ *******************************************************/
+void ServerWindow::removeClient(const char *client)
+{
+    QListWidgetItem *item;
+    char delClient[CLIENT_SIZE]; // hold client string to delete
+    char itemText[CLIENT_SIZE]; // hold string content of list item
+    sprintf(delClient, "%s", client); // copy char param to buffer
+
+    // iterate through the client list
+    for (int row = 0; row < ui->srvClientList->count(); row++)
+    {
+        item = ui->srvClientList->item(row); // get current item
+        sprintf(itemText, item->text().toStdString().c_str()); // copys the items string content
+
+        // if list item is matches the client string the delete
+        if (strcmp(itemText, delClient) == 0)
+        {  // remove current client row from list
+           ui->srvClientList->takeItem(row);
+        }
+    }
 }

@@ -32,7 +32,7 @@ bool validServerPort(char *port, QWidget *parent);
 
 void monitorSockets(int *clients, int numClients);
 void closeSocket(int sck, fd_set *allset, int *clients, int index);
-void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset);
+void checkClients(int numClients, fd_set *rset, int *clients, fd_set *allset, ServerWindow *parent);
 void determineRecepients(const char *message, int senderSocket, int numClients, int *clients);
 
 #endif // SERVER_H

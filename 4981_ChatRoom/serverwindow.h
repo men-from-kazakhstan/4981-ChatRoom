@@ -35,6 +35,7 @@ public:
      *      window.
      *******************************************************/
     void updateClients(const char *client);
+    void removeClient(const char *client);
 
 private slots:
     /********************************************************

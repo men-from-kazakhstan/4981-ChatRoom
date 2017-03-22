@@ -47,11 +47,24 @@ ClientWindow::ClientWindow(QWidget *parent) :
     char usernameDisplay[64] = "Username: ";
     char portDisplay[64] = "Port: ";
     char ipDisplay[64] = "Server: ";
+    // condition for config dialog while loop
+    int error = 0;
 
     ui->setupUi(this);
 
-    ConfigDialog *cd = new ConfigDialog();
-    cd->exec();
+    // loop to re-display config dialog when failure to connect to server
+    while (!error)
+    {   // display config
+        ConfigDialog *cd = new ConfigDialog();
+        cd->exec();
+
+        // setup to the clients TCP socket
+        if (setupClientSocket(this) == 1)
+        {
+            error = 1;
+            break;
+        }
+    }
 
     // concatinate user entered data to display text
     concatUsername(usernameDisplay);
@@ -63,15 +76,10 @@ ClientWindow::ClientWindow(QWidget *parent) :
     ui->cltConfigDisplay->append(portDisplay);
     ui->cltConfigDisplay->append(ipDisplay);
 
+    //If we can connect properly, start our receiving thread ~Matt
+    std::thread reading(receiveMessage, this);
+    reading.detach();
     connect(ui->cltChatEdit, SIGNAL(sendUserMessage()), this, SLOT(on_cltSendButton_clicked()), Qt::UniqueConnection);
-
-    // setup to the clients TCP socket
-    if (setupClientSocket(this))
-    {
-        //If we can connect properly, start our receiving thread ~Matt
-        std::thread reading(receiveMessage, this);
-        reading.detach();
-    }
 }
 
 /* destructor */
