@@ -47,17 +47,23 @@ ClientWindow::ClientWindow(QWidget *parent) :
     char usernameDisplay[64] = "Username: ";
     char portDisplay[64] = "Port: ";
     char ipDisplay[64] = "Server: ";
+    // condition for config dialog while loop
+    int error = 0;
 
     ui->setupUi(this);
 
-    ConfigDialog *cd = new ConfigDialog();
-    cd->exec();
-
-    // setup to the clients TCP socket
-    if (setupClientSocket(this) < 1)
-    {
+    // loop to re-display config dialog when failure to connect to server
+    while (!error)
+    {   // display config
         ConfigDialog *cd = new ConfigDialog();
         cd->exec();
+
+        // setup to the clients TCP socket
+        if (setupClientSocket(this) == 1)
+        {
+            error = 1;
+            break;
+        }
     }
 
     // concatinate user entered data to display text

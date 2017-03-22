@@ -57,6 +57,7 @@ int setupClientSocket(ClientWindow *parent)
     // connect to server and error check
     if (!connectSocket(parent))
     {
+        close(cltInfo.cltSock);
         return -1;
     }
     else
