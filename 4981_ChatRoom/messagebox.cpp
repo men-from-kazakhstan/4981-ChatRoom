@@ -7,6 +7,21 @@
 #include "clientwindow.h"
 #include "client.h"
 
+/********************************************************
+ *  Constructor:       void MessageBox::keyPressEvent(QKeyEvent *e)
+ *                      QKeyEvent *e:  Key event the function is responding to
+ *
+ *  Programmer:     Robert Arendac
+ *
+ *  Created:        Mar 20 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Overrides the QTextEdit method to emit a single when
+ *      the "return" or "enter" key is pressed instead of going
+ *      to a newline
+ *******************************************************/
 MessageBox::MessageBox(QWidget *parent) : QTextEdit(parent)
 {
     setPlaceholderText("Type Your Message Here!");
@@ -16,9 +31,7 @@ MessageBox::MessageBox(QWidget *parent) : QTextEdit(parent)
  *  Function:       void MessageBox::keyPressEvent(QKeyEvent *e)
  *                      QKeyEvent *e:  Key event the function is responding to
  *
- *  Return:         Return 1 on success and 0 on failure
- *
- *  Programmer:     Robert
+ *  Programmer:     Robert Arendac
  *
  *  Created:        Mar 20 2017
  *
@@ -37,8 +50,12 @@ void MessageBox::keyPressEvent(QKeyEvent *e)
         case Qt::Key_Return:
             emit sendUserMessage();
             return;
-        default:
+        case Qt::Key_Backspace:
             QTextEdit::keyPressEvent(e);
-            break;
+        default:
+            if (this->toPlainText().length() < BUFLEN - 75) {   //Extra padding allowed for formatting
+                QTextEdit::keyPressEvent(e);
+                break;
+            }
     }
 }

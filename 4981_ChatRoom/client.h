@@ -21,7 +21,7 @@
 #include <QMessageBox>
 #include <errno.h>
 
-#define BUFLEN 512
+#define BUFLEN 1024
 #define INPUTBUFF 32
 
 /* struct that contains all client info */
