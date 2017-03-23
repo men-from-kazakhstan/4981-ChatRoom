@@ -18,9 +18,7 @@
  *  Modified:
  *
  *  Desc:
- *      Overrides the QTextEdit method to emit a single when
- *      the "return" or "enter" key is pressed instead of going
- *      to a newline
+ *      Sets placeholder text to indicate this is the chat message area.
  *******************************************************/
 MessageBox::MessageBox(QWidget *parent) : QTextEdit(parent)
 {
@@ -38,7 +36,7 @@ MessageBox::MessageBox(QWidget *parent) : QTextEdit(parent)
  *  Modified:
  *
  *  Desc:
- *      Overrides the QTextEdit method to emit a single when
+ *      Overrides the QTextEdit method to emit a signal when
  *      the "return" or "enter" key is pressed instead of going
  *      to a newline
  *******************************************************/
