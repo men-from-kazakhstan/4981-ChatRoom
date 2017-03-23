@@ -413,14 +413,10 @@ void determineRecepients(const char *message, int senderSocket, int numClients, 
  *  Modified:
  *
  *  Desc:
- *      A message box will pop up notifying the user that a client has disconnected, should
- *      be changed so that the client list is updated instead.  Will then close the socket
+ *      closes a specified socket
  *******************************************************/
 void closeSocket(int sck, fd_set *allset, int *clients, int index)
 {
-    char msg[BUFLEN];
-    sprintf(msg, "Client %d has disconnected", sck);
-
     close(sck);
     FD_CLR(sck, allset);
     clients[index] = -1;

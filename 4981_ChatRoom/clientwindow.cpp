@@ -82,7 +82,18 @@ ClientWindow::ClientWindow(QWidget *parent) :
     connect(ui->cltChatEdit, SIGNAL(sendUserMessage()), this, SLOT(on_cltSendButton_clicked()), Qt::UniqueConnection);
 }
 
-/* destructor */
+/********************************************************
+ *  Destructor: ClientWindow
+ *
+ *  Programmer:  Default qt code
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Free's client ui
+ *******************************************************/
 ClientWindow::~ClientWindow()
 {
     delete ui;

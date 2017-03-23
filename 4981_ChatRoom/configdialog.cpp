@@ -15,7 +15,19 @@ using namespace std;
 //string ConfigDialog::colour = "\e[0;34m";
 string ConfigDialog::colour = "black";
 
-/* constructor */
+/********************************************************
+ *  Constructor: ConfigDialog
+ *
+ *  Programmer:  Alex Zielinski, Robert Arendac
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Sets the UI of the config dialog and sets default
+ *      setting values
+ *******************************************************/
 ConfigDialog::ConfigDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ConfigDialog)
@@ -34,16 +46,39 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     // set username to default value
     getlogin_r(tmpUsername, INPUTBUFF); // get system name
     ui->cnfgUsernameEdit->setText(tmpUsername);
-
 }
 
-/* destructor */
+/********************************************************
+ *  Destructor: ConfigDialog
+ *
+ *  Programmer:  default qt code
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Free's config dialog ui
+ *******************************************************/
 ConfigDialog::~ConfigDialog()
 {
     delete ui;
 }
 
-/* config dialog OK button event handler */
+/********************************************************
+ *  Function: void ConfigDialog::on_cnfgOkButton_clicked()
+ *
+ *  Programmer:  Alex Zielinski
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      On click function for config dialog. Goes through
+ *      each setting options and checks if user input is
+ *      valid
+ *******************************************************/
 void ConfigDialog::on_cnfgOkButton_clicked()
 {
     int validFlag = 1;

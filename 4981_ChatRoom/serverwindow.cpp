@@ -10,7 +10,18 @@
 #include "ui_serverwindow.h"
 #include "server.h"
 
-/* constructor */
+/********************************************************
+ *  Constructor: ServerWindow
+ *
+ *  Programmer:  Alex Zielinski
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Sets up server default settings
+ *******************************************************/
 ServerWindow::ServerWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ServerWindow)
@@ -26,13 +37,38 @@ ServerWindow::ServerWindow(QWidget *parent) :
 
 }
 
-/* destructor */
+/********************************************************
+ *  Destructor: ServerWindow
+ *
+ *  Programmer:  Default qt code
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Free's server ui
+ *******************************************************/
 ServerWindow::~ServerWindow()
 {
     delete ui;
 }
 
-/* server start button event handler */
+/********************************************************
+ *  Function: void ServerWindow::on_srvStartStopButton_clicked()
+ *
+ *  Programmer:  Alex Zielinski
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:    Alex Zielinski ~ March 21 2017
+ *                  Set status label
+ *
+ *  Desc:
+ *      On click function for when the user clicks the
+ *      start button to start the server. Checks to see
+ *      if port is valid and then calls to create a socket
+ *******************************************************/
 void ServerWindow::on_srvStartStopButton_clicked()
 {
     // convert user input from QString to char*
@@ -48,7 +84,7 @@ void ServerWindow::on_srvStartStopButton_clicked()
     else
     {
         if (setupServerSocket(this) == 1)
-        {
+        {    // set status label of server
              ui->srvStatusLabel->setText("Status: ON");
         }
     }
