@@ -125,7 +125,7 @@ void ConfigDialog::on_cnfgOkButton_clicked()
  *
  *  Programmer:     Robert Arendac
  *
- *  Created:        Mar 11 2017
+ *  Created:        Mar 19 2017
  *
  *  Modified:
  *
@@ -150,7 +150,7 @@ void ConfigDialog::configMap()
  *
  *  Programmer:     Robert Arendac
  *
- *  Created:        Mar 11 2017
+ *  Created:        Mar 19 2017
  *
  *  Modified:
  *
@@ -166,7 +166,7 @@ string ConfigDialog::getColour() {
  *
  *  Programmer:     Robert Arendac
  *
- *  Created:        Mar 11 2017
+ *  Created:        Mar 19 2017
  *
  *  Modified:
  *
