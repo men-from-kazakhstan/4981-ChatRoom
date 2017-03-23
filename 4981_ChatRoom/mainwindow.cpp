@@ -13,7 +13,18 @@
 #include "serverwindow.h"
 #include "clientwindow.h"
 
-/* constructor */
+/********************************************************
+ *  Constructor: MainWindow
+ *
+ *  Programmer:  Default qt code
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Sets up ui
+ *******************************************************/
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -21,13 +32,37 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this); // display MainWindow
 }
 
-/* destructor */
+/********************************************************
+ *  Destructor: MainWindow
+ *
+ *  Programmer:  Default qt code
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Free's ui
+ *******************************************************/
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-/* client button event handler */
+/********************************************************
+ *  Function: void MainWindow::on_clientButton_clicked()
+ *
+ *  Programmer:  Alex Zielinski
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Onclick function for when the user clicks on the
+ *      clien button. Closes the current window and
+ *      opens the client window
+ *******************************************************/
 void MainWindow::on_clientButton_clicked()
 {
     this->hide(); // hide the current window
@@ -36,7 +71,20 @@ void MainWindow::on_clientButton_clicked()
     cw->show();
 }
 
-/* server button event handler */
+/********************************************************
+ *  Function: void MainWindow::on_serverButton_clicked()
+ *
+ *  Programmer:  Alex Zielinski
+ *
+ *  Created:     Mar 11 2017
+ *
+ *  Modified:
+ *
+ *  Desc:
+ *      Onclick function for when the user clicks on the
+ *      server button. Closes the current window and
+ *      opens the server window
+ *******************************************************/
 void MainWindow::on_serverButton_clicked()
 {
     this->hide(); // hide the current window
